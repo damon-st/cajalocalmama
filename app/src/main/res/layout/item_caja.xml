@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="@dimen/_7sdp"
+    app:cardCornerRadius="@dimen/_15sdp"
+    >
+
+    <LinearLayout
+        android:layout_margin="@dimen/_5sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:background="@drawable/date_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/btn_options"
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_35sdp"
+                    android:src="@drawable/ic_more_options"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="@dimen/_20sdp"
+                    android:scaleType="centerCrop"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/fecha_texto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_16sdp"
+                    android:text="Fecha"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:fontFamily="@font/ubuntu_bold"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/_10sdp"
+                >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/valor_casa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu_medium"
+                    android:text="0.0"
+                    android:textSize="@dimen/_14ssp"
+                    android:layout_weight="1"
+                    />
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:textSize="@dimen/_14ssp"
+                    android:text="VALOR ANOTADO EN LA CASA"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/_10sdp"
+                >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/valor_caja"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu_medium"
+                    android:text="0.0"
+                    android:textSize="@dimen/_14ssp"
+                    android:layout_weight="1"
+                    />
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:textSize="@dimen/_14ssp"
+                    android:text="VALOR ANOTADO EN LA CAJA"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <View
+                android:background="#6C6C6C"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_2sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="10sp"/>
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+              <com.google.android.material.textview.MaterialTextView
+                  android:id="@+id/suma_casa_caja"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="@dimen/_14ssp"
+                  android:textColor="@color/purple_700"
+                  android:text="total"
+                  android:layout_weight="1"
+                  android:layout_marginLeft="@dimen/_10sdp"
+                  />
+
+              <com.google.android.material.textview.MaterialTextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="@dimen/_14ssp"
+                  android:text="Suma de CASA + CAJA"
+                  android:layout_weight="1"
+                  />
+
+          </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/valor_internet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/purple_700"
+                    android:text="-total"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14ssp"
+                    android:text="Internet Anotado"
+                    android:layout_weight="1"
+                    />
+
+            </LinearLayout>
+
+
+          <View
+              android:background="#6C6C6C"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/_2sdp"
+              android:layout_marginLeft="@dimen/_10sdp"
+              android:layout_marginRight="@dimen/_10sdp"/>
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+              <com.google.android.material.textview.MaterialTextView
+                  android:id="@+id/total_suma_caja_casa"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="@dimen/_14ssp"
+                  android:fontFamily="@font/ubuntu_regular"
+                  android:text="total"
+                  android:textColor="@color/purple_700"
+                  android:layout_weight="1"
+                  android:layout_marginLeft="@dimen/_10sdp"
+                  />
+
+              <com.google.android.material.textview.MaterialTextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="@dimen/_14ssp"
+                  android:fontFamily="@font/ubuntu_regular"
+                  android:text=""
+                  android:layout_weight="1"/>
+
+          </LinearLayout>
+
+
+        </LinearLayout>
+
+        <View
+            android:background="#6C6C6C"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_2sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_14ssp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:text="SUMA DE BASES DE RECARGAS"
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_10sdp"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/valor_base_mio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_medium"
+                android:text="0.0"
+                android:textSize="@dimen/_14ssp"
+                android:layout_weight="1"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:textSize="@dimen/_14ssp"
+                android:text="Valor base recarga mio"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_10sdp"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/valor_base_evelyn_vendido"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_medium"
+                android:text="0.0"
+                android:textSize="@dimen/_14ssp"
+                android:layout_weight="1"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:textSize="@dimen/_14ssp"
+                android:text="Valor recarga base evelyn vendido"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_10sdp"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/valor_base_evelyn_saldo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_medium"
+                android:text="0.0"
+                android:textSize="@dimen/_14ssp"
+                android:layout_weight="1"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:textSize="@dimen/_14ssp"
+                android:text="Saldo en base de recarga de la evelyn"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_10sdp"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/valor_base_movilway"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_medium"
+                android:text="0.0"
+                android:textSize="@dimen/_14ssp"
+                android:layout_weight="1"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:textSize="@dimen/_14ssp"
+                android:text="Valor recarga Movilway"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+
+        <View
+            android:background="#6C6C6C"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_10sdp"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/suma_valores_bases"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_medium"
+                android:text="0.0"
+                android:textSize="@dimen/_14ssp"
+                android:layout_weight="1"
+                android:textColor="@color/purple_700"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:textSize="@dimen/_14ssp"
+                android:text="Suma de los valores Bases"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_10sdp"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/suma_valores_bases_mas_total_anterior"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_medium"
+                android:text="+0.0"
+                android:textSize="@dimen/_14ssp"
+                android:layout_weight="1"
+                android:textColor="@color/purple_700"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:textSize="@dimen/_14ssp"
+                android:text="Suma del resultado de la suma total"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_5sdp"
+            android:background="@color/purple_700"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_10sdp"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/gran_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_medium"
+                android:text="+0.0"
+                android:textSize="@dimen/_14ssp"
+                android:layout_weight="1"
+                android:textColor="@color/purple_700"
+                />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:textSize="@dimen/_14ssp"
+                android:text="El GRAN TOTAL"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:background="@drawable/date_down_bacground"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:layout_weight="1"
+               >
+               <com.google.android.material.textview.MaterialTextView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:textSize="@dimen/_14ssp"
+                   android:text="VALOR A LLEGAR"
+                   android:padding="@dimen/_5sdp"
+                   android:textAlignment="center"
+                   android:fontFamily="@font/ubuntu_medium"
+                   android:gravity="center_horizontal" />
+
+               <com.google.android.material.textview.MaterialTextView
+                   android:id="@+id/valor_allegar"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:textColor="@color/purple_700"
+                   android:text="200"
+                   android:textAlignment="center"
+                   android:textSize="@dimen/_20ssp"
+                   android:fontFamily="@font/ubuntu_bold"
+                   android:padding="@dimen/_10sdp"
+                   android:gravity="center_horizontal" />
+           </LinearLayout>
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="wrap_content"
+                android:background="@color/purple_700"/>
+
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+              <com.google.android.material.textview.MaterialTextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="@dimen/_14ssp"
+                  android:text="TOTAL ECHO CAJA"
+                  android:padding="@dimen/_5sdp"
+                  android:textAlignment="center"
+                  android:fontFamily="@font/ubuntu_medium"
+                  android:gravity="center_horizontal" />
+
+
+              <com.google.android.material.textview.MaterialTextView
+                  android:id="@+id/suma_valor_total"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:textColor="@color/purple_700"
+                  android:text="200"
+                  android:textAlignment="center"
+                  android:textSize="@dimen/_20ssp"
+                  android:fontFamily="@font/ubuntu_bold"
+                  android:padding="@dimen/_10sdp"
+                  android:gravity="center_horizontal" />
+
+              <com.google.android.material.textview.MaterialTextView
+                  android:id="@+id/saldo_faltante_osobrante"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:textColor="@color/purple_700"
+                  android:text="200"
+                  android:textAlignment="center"
+                  android:textSize="@dimen/_20ssp"
+                  android:fontFamily="@font/ubuntu_bold"
+                  android:padding="@dimen/_10sdp"
+                  android:gravity="center_horizontal"
+                  android:visibility="gone"
+                  />
+          </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>
