@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.damon.caja.adapters.CajaAdapter;
+import com.damon.caja.coneccion.CheckNetworkConnection;
 import com.damon.caja.models.CajaM;
 import com.damon.caja.ui.CreateActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.rey.material.widget.ProgressView;
 
 import java.util.ArrayList;
@@ -68,8 +70,62 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        LoadCajas();
+        new CheckNetworkConnection(MainActivity.this, new CheckNetworkConnection.OnConnectionCallback() {
+            @Override
+            public void onConnectionSuccess() {
+                LoadCajas();
+            }
+
+            @Override
+            public void onConnectionFail(String errorMsg) {
+                Toast.makeText(MainActivity.this, "No ay conexcion a internet \n Mostremos datos en cache", Toast.LENGTH_LONG).show();
+                LoadCajasSinInternet();
+                btn_create.setVisibility(View.GONE);
+            }
+        }).execute();
+
+
     }
+
+    private void LoadCajasSinInternet(){
+       new Thread(){
+           @Override
+           public void run() {
+               super.run();
+               progressView.setVisibility(View.VISIBLE);
+               CollectionReference reference = db.collection("Caja");
+
+               // Source can be CACHE, SERVER, or DEFAULT.
+               Source cache = Source.CACHE;
+               // Get the document, forcing the SDK to use the offline cache
+               reference.get(cache).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                   @Override
+                   public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                       if (task.isSuccessful()){
+                           progressView.setVisibility(View.GONE);
+                           cajaMList.clear();
+                           for (QueryDocumentSnapshot snapshot : task.getResult()){
+                               CajaM cajaM = snapshot.toObject(CajaM.class);
+                               cajaM.setId(snapshot.getId());
+                               cajaMList.add(cajaM);
+                           }
+                           cajaAdapter.notifyDataSetChanged();
+                       }else {
+                           progressView.setVisibility(View.GONE);
+                       }
+                   }
+               }).addOnFailureListener(new OnFailureListener() {
+                   @Override
+                   public void onFailure(@NonNull Exception e) {
+                       Toast.makeText(MainActivity.this, "Ocurrio un error al cargar los datos\n"+e.getMessage() , Toast.LENGTH_SHORT).show();
+                       progressView.setVisibility(View.GONE);
+                   }
+               });
+           }
+       }.start();
+    }
+
+
 
     private void LoadCajas(){
         Executors.newSingleThreadExecutor().submit(new Runnable() {

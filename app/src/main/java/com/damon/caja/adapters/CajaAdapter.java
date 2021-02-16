@@ -90,6 +90,8 @@ public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
             holder.saldo_faltante_osobrante.setVisibility(View.VISIBLE);
             holder.saldo_faltante_osobrante.setText("+"+formatDouble(saldoFaltanteOSobrante));
             holder.saldo_faltante_osobrante.setTextColor(activity.getResources().getColor(R.color.alert));
+        }else {
+            holder.saldo_faltante_osobrante.setVisibility(View.GONE);
         }
 
         holder.btn_options.setOnClickListener(v -> {
