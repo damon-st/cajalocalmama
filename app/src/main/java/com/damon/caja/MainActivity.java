@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -144,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
                                 CajaM cajaM = snapshot.toObject(CajaM.class);
                                 cajaM.setId(snapshot.getId());
                                 cajaMList.add(cajaM);
+                            }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
                             }
                             cajaAdapter.notifyDataSetChanged();
                         }else {
