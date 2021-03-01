@@ -2,6 +2,7 @@ package com.damon.caja.holder;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ public class CajaViewHolder  extends RecyclerView.ViewHolder {
             suma_valores_bases_mas_total_anterior,gran_total,valor_allegar,suma_valor_total,saldo_faltante_osobrante;
 
     public ImageView btn_options;
+    public LinearLayout layout_details;
 
     public CajaViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -38,6 +40,7 @@ public class CajaViewHolder  extends RecyclerView.ViewHolder {
         saldo_faltante_osobrante = itemView.findViewById(R.id.saldo_faltante_osobrante);
 
         btn_options = itemView.findViewById(R.id.btn_options);
+        layout_details = itemView.findViewById(R.id.layout_dateils);
 
     }
 }

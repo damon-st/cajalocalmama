@@ -14,6 +14,9 @@ public class CajaM  implements Serializable {
     private String fecha,id;
 
     private double ValorTotalAllegar;
+
+    private boolean isCollapse;
+
     public String getId() {
         return id;
     }
@@ -38,6 +41,15 @@ public class CajaM  implements Serializable {
         this.fecha = fecha;
         this.id = id;
         ValorTotalAllegar = valorTotalAllegar;
+        isCollapse = true;
+    }
+
+    public boolean isCollapse() {
+        return isCollapse;
+    }
+
+    public void setCollapse(boolean collapse) {
+        isCollapse = collapse;
     }
 
     public double getValorTotalAllegar() {

@@ -1,4 +1,4 @@
-package com.damon.caja;
+package com.damon.caja.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,19 +8,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.damon.caja.R;
 import com.damon.caja.adapters.CajaAdapter;
 import com.damon.caja.coneccion.CheckNetworkConnection;
 import com.damon.caja.models.CajaM;
-import com.damon.caja.ui.CreateActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -37,7 +38,7 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity {
 
 
-    FloatingActionButton btn_create;
+    ImageView btn_move_down;
 
     private List<CajaM> cajaMList;
     private RecyclerView recyclerView;
@@ -55,21 +56,17 @@ public class MainActivity extends AppCompatActivity {
 
         cajaMList = new ArrayList<>();
 
-        btn_create = findViewById(R.id.btn_create);
+        btn_move_down = findViewById(R.id.btn_move_down);
         recyclerView = findViewById(R.id.rcy_main);
         progressView = findViewById(R.id.progress_linear);
         recyclerView.setHasFixedSize(true);
 
 
-        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        cajaAdapter = new CajaAdapter(MainActivity.this,cajaMList,db);
+        cajaAdapter = new CajaAdapter(MainActivity.this, cajaMList, db);
         recyclerView.setAdapter(cajaAdapter);
 
-        btn_create.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CreateActivity.class);
-            startActivity(intent);
-        });
 
         new CheckNetworkConnection(MainActivity.this, new CheckNetworkConnection.OnConnectionCallback() {
             @Override
@@ -81,10 +78,39 @@ public class MainActivity extends AppCompatActivity {
             public void onConnectionFail(String errorMsg) {
                 Toast.makeText(MainActivity.this, "No ay conexcion a internet \n Mostremos datos en cache", Toast.LENGTH_LONG).show();
                 LoadCajasSinInternet();
-                btn_create.setVisibility(View.GONE);
+                btn_move_down.setVisibility(View.GONE);
             }
         }).execute();
 
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+
+                if ((visibleItemCount+pastVisibleItem) >= totalItemCount){
+                    btn_move_down.setVisibility(View.GONE);
+                }else {
+                    btn_move_down.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        btn_move_down.setOnClickListener(v -> {
+            recyclerView.smoothScrollToPosition(cajaAdapter.getItemCount());
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (cajaAdapter.getItemCount() >0)
+                recyclerView.smoothScrollToPosition(cajaAdapter.getItemCount());
+            }
+        },2100);
 
     }
 
@@ -183,6 +209,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.refresh){
             recreate();
+        }else if (id == R.id.create_Caja) {
+            Intent intent = new Intent(MainActivity.this,CreateActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

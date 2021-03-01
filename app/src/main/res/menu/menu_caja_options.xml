@@ -2,7 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:id="@+id/delete_caja"
+    <item android:id="@+id/update_caja"
+        android:title="Actulizar Caja"
+        />
+
+
+
+        <item android:id="@+id/delete_caja"
         android:title="Eliminar Esta CAJA"/>
 
 </menu>

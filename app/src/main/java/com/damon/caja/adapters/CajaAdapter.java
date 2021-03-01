@@ -3,7 +3,9 @@ package com.damon.caja.adapters;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.damon.caja.R;
 import com.damon.caja.holder.CajaViewHolder;
 import com.damon.caja.models.CajaM;
+import com.damon.caja.ui.CreateActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -94,6 +97,14 @@ public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
             holder.saldo_faltante_osobrante.setVisibility(View.GONE);
         }
 
+        holder.fecha_Texto.setOnClickListener(v -> {
+            cajaM.setCollapse(!cajaM.isCollapse());
+            notifyDataSetChanged();
+        });
+
+        holder.layout_details.setVisibility(cajaM.isCollapse() ? View.VISIBLE : View.GONE);
+
+
         holder.btn_options.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(activity,v);
             popupMenu.inflate(R.menu.menu_caja_options);
@@ -116,6 +127,12 @@ public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
                                 dialog.dismiss();
                             }
                         }).create().show();
+                    }else if (item.getItemId() == R.id.update_caja){
+                        Intent intent = new Intent(activity, CreateActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("caja",cajaM);
+                        intent.putExtras(bundle);
+                        activity.startActivity(intent);
                     }
                     return false;
                 }

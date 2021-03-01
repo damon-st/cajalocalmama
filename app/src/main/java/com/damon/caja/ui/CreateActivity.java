@@ -3,6 +3,7 @@ package com.damon.caja.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -45,6 +46,10 @@ public class CreateActivity extends AppCompatActivity {
     private ProgressView progressLinear;
 
     private Date date;
+
+    private boolean isUpdate;
+    private String pathID="1";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +79,43 @@ public class CreateActivity extends AppCompatActivity {
             progressLinear.setVisibility(View.VISIBLE);
         });
 
+
+        try {
+            Intent intent = getIntent();
+            if (intent != null && intent.getExtras() != null){
+
+                isUpdate =true;
+
+                Bundle bundle = getIntent().getExtras();
+                CajaM cajaM = (CajaM)bundle.getSerializable("caja");
+
+                pathID = cajaM.getId();
+                txt_valor_caja.setText(String.valueOf(cajaM.getValorCaja()));
+                txt_valor_casa.setText(String.valueOf(cajaM.getValorCasa()));
+                txt_base_mio.setText(String.valueOf(cajaM.getBaseRecargaMio()));
+                txt_base_evelyn_base.setText(String.valueOf(cajaM.getBaseRecargaEvelynBase()));
+                txt_base_evelyn_vendido.setText(String.valueOf(cajaM.getBaseRecargaEvelynVendido()));
+                txt_base_movilway.setText(String.valueOf(cajaM.getBaseRecargaMovilway()));
+                txt_internet_anotado.setText(String.valueOf(cajaM.getInternetAnotado()));
+                txt_valor_a_llegar.setText(String.valueOf(cajaM.getValorTotalAllegar()));
+
+                fecha = new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm a",Locale.getDefault()).format(cajaM.getFechaDate());
+                fechaTv.setText(fecha);
+
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                cajaFecha = cajaM.getFechaDate().getTime();
+                String salidaFechaUpdateOrigin = dateFormat.format(cajaFecha);
+                cajaFecha = Long.parseLong(salidaFechaUpdateOrigin.replace("-",""));
+
+                btn_create.setText("ACTUALIZAR CAJA");
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void CreateCaja(){
@@ -100,29 +142,47 @@ public class CreateActivity extends AppCompatActivity {
                     cajaM.setFecha(fecha);
                     cajaM.setValorTotalAllegar(getValor(txt_valor_a_llegar.getText().toString()));
 
-                    db.collection("Caja").add(cajaM)
-                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                    if (task.isSuccessful()) {
-                                        progressLinear.setVisibility(View.GONE);
-                                        Toast.makeText(CreateActivity.this, "Creado la caja ", Toast.LENGTH_SHORT).show();
-                                        onBackPressed();
-                                    }else {
-                                        progressLinear.setVisibility(View.GONE);
-                                        Toast.makeText(CreateActivity.this, "Error al crear", Toast.LENGTH_SHORT).show();
-                                        btn_create.setEnabled(true);
-
-                                    }
+                    if (isUpdate){
+                        db.collection("Caja").document(pathID).set(cajaM).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Toast.makeText(CreateActivity.this, "Actulizado exitosamente", Toast.LENGTH_SHORT).show();
+                                    onBackPressed();
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressLinear.setVisibility(View.GONE);
-                            btn_create.setEnabled(true);
-                            Toast.makeText(CreateActivity.this, "Errror al crear \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.getMessage();
+                                Toast.makeText(CreateActivity.this, "Error al Actualizar " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }else {
+                        db.collection("Caja").add(cajaM)
+                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                        if (task.isSuccessful()) {
+                                            progressLinear.setVisibility(View.GONE);
+                                            Toast.makeText(CreateActivity.this, "Creado la caja ", Toast.LENGTH_SHORT).show();
+                                            onBackPressed();
+                                        }else {
+                                            progressLinear.setVisibility(View.GONE);
+                                            Toast.makeText(CreateActivity.this, "Error al crear", Toast.LENGTH_SHORT).show();
+                                            btn_create.setEnabled(true);
+
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressLinear.setVisibility(View.GONE);
+                                btn_create.setEnabled(true);
+                                Toast.makeText(CreateActivity.this, "Errror al crear \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
             }
         }.start();
