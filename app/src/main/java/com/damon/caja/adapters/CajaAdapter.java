@@ -49,46 +49,50 @@ public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CajaViewHolder holder, int position) {
-        CajaM  cajaM = cajaMList.get(position);
+        CajaM cajaM = cajaMList.get(position);
 
         holder.fecha_Texto.setText(cajaM.getFecha());
 
-        holder.valor_caja.setText(""+cajaM.getValorCaja());
-        holder.valor_casa.setText(""+cajaM.getValorCasa());
-        double suma_casa_caja = suma_casa_caja(cajaM.getValorCasa(),cajaM.getValorCaja());
-        holder.suma_casa_caja.setText(""+ suma_casa_caja);
-        holder.valor_internet.setText("-"+cajaM.getInternetAnotado());
+        holder.valor_caja.setText("" + cajaM.getValorCaja());
+        holder.valor_casa.setText("" + cajaM.getValorCasa());
+        double suma_casa_caja = suma_casa_caja(cajaM.getValorCasa(), cajaM.getValorCaja());
+        holder.suma_casa_caja.setText("" + suma_casa_caja);
+        holder.valor_internet.setText("-" + cajaM.getInternetAnotado());
 
-        double resta_internet_suma_caja_casa = resta_internet_menos_suma_casa_caja(suma_casa_caja,cajaM.getInternetAnotado());
+        double resta_internet_suma_caja_casa = resta_internet_menos_suma_casa_caja(suma_casa_caja, cajaM.getInternetAnotado());
         holder.total_suma_caja_casa.setText(formatDouble(resta_internet_suma_caja_casa));
 
-        holder.valor_base_mio.setText(""+cajaM.getBaseRecargaMio());
-        holder.valor_base_evelyn_vendido.setText(""+cajaM.getBaseRecargaEvelynVendido());
-        holder.valor_base_evelyn_saldo.setText(""+cajaM.getBaseRecargaEvelynBase());
-        holder.valor_base_movilway.setText(""+cajaM.getBaseRecargaMovilway());
+        holder.valor_base_mio.setText("" + cajaM.getBaseRecargaMio());
+        holder.valor_base_evelyn_vendido.setText("" + cajaM.getBaseRecargaEvelynVendido());
+        holder.valor_base_evelyn_saldo.setText("" + cajaM.getBaseRecargaEvelynBase());
+        holder.valor_base_movilway.setText("" + cajaM.getBaseRecargaMovilway());
 
-        double suma_bases_regarcas = suma_bases_recargas(cajaM.getBaseRecargaMio(),cajaM.getBaseRecargaEvelynVendido(),cajaM.getBaseRecargaEvelynBase(),cajaM.getBaseRecargaMovilway());
+        double suma_bases_regarcas = suma_bases_recargas(cajaM.getBaseRecargaMio(), cajaM.getBaseRecargaEvelynVendido(), cajaM.getBaseRecargaEvelynBase(), cajaM.getBaseRecargaMovilway());
         holder.suma_valores_bases.setText(formatDouble(suma_bases_regarcas));
-        holder.suma_valores_bases_mas_total_anterior.setText("+"+formatDouble(resta_internet_suma_caja_casa));
+        holder.suma_valores_bases_mas_total_anterior.setText("+" + formatDouble(resta_internet_suma_caja_casa));
 
-        double sumaTotal = suma_valores_bases_mas_suma_total_casa_caja(resta_internet_suma_caja_casa,suma_bases_regarcas);
+        double sumaTotal = suma_valores_bases_mas_suma_total_casa_caja(resta_internet_suma_caja_casa, suma_bases_regarcas);
 
-        holder.gran_total.setText(""+formatDouble(sumaTotal));
-        holder.suma_valor_total.setText(""+formatDouble(sumaTotal));
+        holder.gran_total.setText("" + formatDouble(sumaTotal));
+        holder.suma_valor_total.setText("" + formatDouble(sumaTotal));
 
-        holder.valor_allegar.setText(""+cajaM.getValorTotalAllegar());
+        holder.valor_allegar.setText("" + cajaM.getValorTotalAllegar());
 
-        double saldoFaltanteOSobrante = valorFaltanteoSobrante(sumaTotal,cajaM.getValorTotalAllegar());
+        double saldoFaltanteOSobrante = valorFaltanteoSobrante(sumaTotal, cajaM.getValorTotalAllegar());
 
-        if (sumaTotal == cajaM.getValorTotalAllegar()){
+        if (sumaTotal == cajaM.getValorTotalAllegar()) {
             holder.suma_valor_total.setTextColor(activity.getResources().getColor(R.color.success));
-        }else if (sumaTotal < cajaM.getValorTotalAllegar()){
+        } else {
+            holder.saldo_faltante_osobrante.setVisibility(View.GONE);
+        }
+
+        if (sumaTotal < cajaM.getValorTotalAllegar()) {
             holder.suma_valor_total.setTextColor(activity.getResources().getColor(R.color.warning));
             holder.saldo_faltante_osobrante.setVisibility(View.VISIBLE);
             holder.saldo_faltante_osobrante.setText(formatDouble(saldoFaltanteOSobrante));
             holder.saldo_faltante_osobrante.setTextColor(activity.getResources().getColor(R.color.warning));
 
-        }else if (sumaTotal > cajaM.getValorTotalAllegar()){
+        } else if (sumaTotal > cajaM.getValorTotalAllegar()){
             holder.suma_valor_total.setTextColor(activity.getResources().getColor(R.color.alert));
             holder.saldo_faltante_osobrante.setVisibility(View.VISIBLE);
             holder.saldo_faltante_osobrante.setText("+"+formatDouble(saldoFaltanteOSobrante));
