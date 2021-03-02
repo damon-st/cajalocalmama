@@ -103,10 +103,11 @@ public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
 
         holder.fecha_Texto.setOnClickListener(v -> {
             cajaM.setCollapse(!cajaM.isCollapse());
-            notifyDataSetChanged();
+            notifyItemChanged(position);
         });
 
-        holder.layout_details.setVisibility(cajaM.isCollapse() ? View.VISIBLE : View.GONE);
+        boolean isExpandle = cajaM.isCollapse();
+        holder.layout_details.setVisibility(isExpandle ? View.VISIBLE : View.GONE);
 
 
         holder.btn_options.setOnClickListener(v -> {

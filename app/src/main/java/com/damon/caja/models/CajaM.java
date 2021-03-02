@@ -41,7 +41,7 @@ public class CajaM  implements Serializable {
         this.fecha = fecha;
         this.id = id;
         ValorTotalAllegar = valorTotalAllegar;
-        isCollapse = true;
+        isCollapse = false;
     }
 
     public boolean isCollapse() {
