@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,17 +28,23 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
 
     private Activity activity;
     private List<CajaM> cajaMList;
+    private List<CajaM> searchCajaList;
     private FirebaseFirestore firebaseFirestore;
+    private Timer timer;
 
     public CajaAdapter(Activity activity, List<CajaM> cajaMList,FirebaseFirestore firebaseFirestore) {
         this.activity = activity;
         this.cajaMList = cajaMList;
+        this.searchCajaList = cajaMList;
         this.firebaseFirestore = firebaseFirestore;
     }
 
@@ -190,6 +198,39 @@ public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
         return format.format(res);
     }
 
+    public void searchCajaDate(String date){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (date.trim().isEmpty()){
+                    cajaMList = searchCajaList;
+                }else {
+                    ArrayList<CajaM> temp = new ArrayList<>();
+                    for (CajaM cajaM : searchCajaList){
+                        if (cajaM.getFecha().trim().toLowerCase().contains(date.trim().toLowerCase())){
+                            temp.add(cajaM);
+                        }
+                    }
+                    cajaMList = temp;
+                }
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                            notifyDataSetChanged();
+                    }
+                });
+            }
+        },500);
+    }
+
+    public void cancelTimer(){
+        if (timer!= null){
+            timer.cancel();
+        }
+    }
+
+
     @Override
     public int getItemCount() {
         if (cajaMList.size() >0){
@@ -198,4 +239,6 @@ public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
             return 0;
         }
     }
+
+
 }

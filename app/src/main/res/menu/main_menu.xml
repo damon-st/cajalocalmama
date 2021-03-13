@@ -13,4 +13,11 @@
         android:icon="@drawable/ic_add"
         app:showAsAction="always|collapseActionView"/>
 
+    <item android:title="Buscar"
+        android:id="@+id/buscarfecha"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+         />
+
+
 </menu>

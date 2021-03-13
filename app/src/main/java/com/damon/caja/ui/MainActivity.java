@@ -2,9 +2,11 @@ package com.damon.caja.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,13 +15,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.damon.caja.R;
 import com.damon.caja.adapters.CajaAdapter;
 import com.damon.caja.coneccion.CheckNetworkConnection;
 import com.damon.caja.models.CajaM;
+import com.google.android.gms.common.util.concurrent.HandlerExecutor;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -31,9 +38,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.rey.material.widget.ProgressView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RunnableFuture;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db;
     private ProgressView progressView;
 
+    private LinearLayout linearSearch;
+    private ImageView clearSearch;
+    private TextView txt_search;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
         cajaMList = new ArrayList<>();
 
+        txt_search = findViewById(R.id.txt_search);
+        clearSearch = findViewById(R.id.delete_search);
+        linearSearch = findViewById(R.id.linear_search);
         btn_move_down = findViewById(R.id.btn_move_down);
         recyclerView = findViewById(R.id.rcy_main);
         progressView = findViewById(R.id.progress_linear);
@@ -112,7 +129,33 @@ public class MainActivity extends AppCompatActivity {
             }
         },2100);
 
+        clearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearSearch.setVisibility(View.GONE);
+                cancelTimer();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setVisivilityLiner();
+                    }
+                },2000);
+            }
+        });
+
+        clearSearch.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                linearSearch.setVisibility(View.GONE);
+                cajaAdapter.searchCajaDate("");
+                cancelTimer();
+                return false;
+            }
+        });
+
     }
+
+
 
     private void LoadCajasSinInternet(){
        new Thread(){
@@ -136,6 +179,12 @@ public class MainActivity extends AppCompatActivity {
                                cajaM.setId(snapshot.getId());
                                cajaMList.add(cajaM);
                            }
+
+                           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                               cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
+                           }
+
+
                            cajaAdapter.notifyDataSetChanged();
                        }else {
                            progressView.setVisibility(View.GONE);
@@ -201,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu,menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -212,7 +262,43 @@ public class MainActivity extends AppCompatActivity {
         }else if (id == R.id.create_Caja) {
             Intent intent = new Intent(MainActivity.this,CreateActivity.class);
             startActivity(intent);
+        }else if (id == R.id.buscarfecha){
+
+            final Calendar newCalendar = Calendar.getInstance();
+            DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    Calendar newDate = Calendar.getInstance();
+                    newDate.set(year, monthOfYear, dayOfMonth);
+//                inputSearch.setText(dateFormatter.format(newDate.getTime()));
+                    String searchDate = new SimpleDateFormat("EEEE, dd MMMM yyyy ")
+                            .format(newDate.getTime());
+
+                    setVisivilityLiner();
+                    txt_search.setText(searchDate);
+
+                    cajaAdapter.searchCajaDate(searchDate);
+                    cancelTimer();
+                }
+
+            }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+            StartTime.show();
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setVisivilityLiner() {
+        linearSearch.setVisibility(View.VISIBLE);
+        linearSearch.setAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.scale_animation));
+    }
+
+    void cancelTimer(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cajaAdapter.cancelTimer();
+            }
+        },700);
     }
 }
