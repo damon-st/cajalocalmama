@@ -7,13 +7,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
@@ -109,9 +115,9 @@ public class MainActivity extends AppCompatActivity {
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int pastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 
-                if ((visibleItemCount+pastVisibleItem) >= totalItemCount){
+                if ((visibleItemCount + pastVisibleItem) >= totalItemCount) {
                     btn_move_down.setVisibility(View.GONE);
-                }else {
+                } else {
                     btn_move_down.setVisibility(View.VISIBLE);
                 }
             }
@@ -124,36 +130,52 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (cajaAdapter.getItemCount() >0)
-                recyclerView.smoothScrollToPosition(cajaAdapter.getItemCount());
+                if (cajaAdapter.getItemCount() > 0)
+                    recyclerView.smoothScrollToPosition(cajaAdapter.getItemCount());
             }
-        },2100);
+        }, 2100);
 
         clearSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 linearSearch.setVisibility(View.GONE);
-                cancelTimer();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setVisivilityLiner();
-                    }
-                },2000);
-            }
-        });
-
-        clearSearch.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                linearSearch.setVisibility(View.GONE);
                 cajaAdapter.searchCajaDate("");
                 cancelTimer();
-                return false;
             }
         });
+//        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+//        int width = metrics.widthPixels;
+//        int height = metrics.heightPixels;
 
+        linearSearch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        dX = view.getX() - event.getRawX();
+                        dY = view.getY() - event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+
+//                            view.animate()
+//                                    .x(event.getRawX() + dX)
+//                                    .y(event.getRawY() + dY)
+//                                    .setDuration(0)
+//                                    .start();
+                            view.setTranslationX(event.getRawX()+dX);
+                            view.setTranslationY(event.getRawY()+dY);
+
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
     }
+
+    private float dX;
+    private float dY;
 
 
 
