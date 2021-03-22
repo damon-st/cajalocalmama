@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
+        getSupportActionBar().setTitle("Listado de Cajas");
+
         cajaMList = new ArrayList<>();
 
         total_numero_cajas = findViewById(R.id.total_numero_cajas);

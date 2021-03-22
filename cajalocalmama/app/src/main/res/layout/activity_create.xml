@@ -8,19 +8,21 @@
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
 
@@ -28,25 +30,25 @@
                 android:id="@+id/tv_fecha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_18ssp"
-                android:text="FECHA"
                 android:layout_margin="@dimen/_15sdp"
+                android:gravity="center_horizontal"
+                android:text="FECHA"
                 android:textAlignment="center"
-                android:gravity="center_horizontal" />
+                android:textSize="@dimen/_18ssp" />
 
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor que ay en la Casa"
                 android:layout_margin="@dimen/_10sdp"
-                >
+                android:hint="Valor que ay en la Casa">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:id="@+id/txt_valor_casa"
-                    android:text="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -55,15 +57,15 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor que ay en la Caja Local"
                 android:layout_margin="@dimen/_10sdp"
-                >
+                android:hint="Valor que ay en la Caja Local">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:id="@+id/txt_valor_caja"
-                    android:text="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+
 
                     />
 
@@ -73,15 +75,15 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor Base Recarga Mio"
                 android:layout_margin="@dimen/_10sdp"
-                >
+                android:hint="Valor Base Recarga Mio">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:id="@+id/txt_base_mio"
-                    android:text="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -89,15 +91,15 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor Base Recarga Evelyn Vendido"
                 android:layout_margin="@dimen/_10sdp"
-                >
+                android:hint="Valor Base Recarga Evelyn Vendido">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:id="@+id/txt_base_evelyn_vendido"
-                    android:text="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+
 
                     />
 
@@ -107,15 +109,15 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor Saldo Recarga Evelyn Base"
                 android:layout_margin="@dimen/_10sdp"
-                >
+                android:hint="Valor Saldo Recarga Evelyn Base">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:id="@+id/txt_base_evelyn_base"
-                    android:text="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+
 
                     />
 
@@ -124,15 +126,15 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor Base Recarga Movilway"
                 android:layout_margin="@dimen/_10sdp"
-                >
+                android:hint="Valor Base Recarga Movilway">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:id="@+id/txt_base_movilway"
-                    android:text="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+
 
                     />
 
@@ -142,15 +144,15 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor Internet Anotado en la Hoja"
                 android:layout_margin="@dimen/_10sdp"
-                >
+                android:hint="Valor Internet y Cabina Anotado en la Hoja">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:id="@+id/txt_internet_anotado"
-                    android:text="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+
 
                     />
 
@@ -160,14 +162,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="VALOR A LLEGAR DE LA CAJA"
                 android:layout_margin="@dimen/_10sdp"
-                >
+                android:hint="VALOR A LLEGAR DE LA CAJA">
+
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_valor_a_llegar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
-                    android:id="@+id/txt_valor_a_llegar"
                     android:text="200"
 
                     />
@@ -176,11 +178,12 @@
 
 
             <com.rey.material.widget.ProgressView
+              android:visibility="gone"
                 android:id="@+id/progress_linear"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_48sdp"
                 android:layout_alignParentTop="true"
-                android:layout_marginBottom="597dp"
+                android:layout_marginBottom="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -193,15 +196,13 @@
                 app:pv_progressStyle="@style/Material.Drawable.LinearProgress.Custom" />
 
 
-
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_create_caja"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_15sdp"
-                android:textColor="@android:color/white"
                 android:text="CREAR CAJA "
-                android:id="@+id/btn_create_caja"
-                />
+                android:textColor="@android:color/white" />
 
 
         </LinearLayout>

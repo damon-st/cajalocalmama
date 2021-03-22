@@ -56,6 +56,8 @@ public class CreateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create);
 
 
+        getSupportActionBar().setTitle("Crear Caja");
+
         initializeComponets();
         date = new Date();
         fecha = new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm a", Locale.getDefault()).format(date);
@@ -124,65 +126,89 @@ public class CreateActivity extends AppCompatActivity {
             @Override
             public void run() {
                 super.run();
-                if (TextUtils.isEmpty(txt_valor_casa.getText().toString())){
-                    Toast.makeText(CreateActivity.this, "LLena todos los campos", Toast.LENGTH_SHORT).show();
-                    return;
-                }else {
-
-                    CajaM cajaM = new CajaM();
-                    cajaM.setValorCaja(getValor(txt_valor_caja.getText().toString()));
-                    cajaM.setValorCasa(getValor(txt_valor_casa.getText().toString()));
-                    cajaM.setBaseRecargaMio(getValor(txt_base_mio.getText().toString()));
-                    cajaM.setBaseRecargaEvelynBase(getValor(txt_base_evelyn_base.getText().toString()));
-                    cajaM.setBaseRecargaEvelynVendido(getValor(txt_base_evelyn_vendido.getText().toString()));
-                    cajaM.setBaseRecargaMovilway(getValor(txt_base_movilway.getText().toString()));
-                    cajaM.setInternetAnotado(getValor(txt_internet_anotado.getText().toString()));
-                    cajaM.setFechaCreado(cajaFecha);
-                    cajaM.setFechaDate(date);
-                    cajaM.setFecha(fecha);
-                    cajaM.setValorTotalAllegar(getValor(txt_valor_a_llegar.getText().toString()));
-
-                    if (isUpdate){
-                        db.collection("Caja").document(pathID).set(cajaM).addOnCompleteListener(new OnCompleteListener<Void>() {
+                try {
+                    if (TextUtils.isEmpty(txt_valor_casa.getText().toString())||
+                            TextUtils.isEmpty(txt_valor_caja.getText().toString())||
+                            TextUtils.isEmpty(txt_base_mio.getText().toString())||
+                            TextUtils.isEmpty(txt_base_evelyn_base.getText().toString())||
+                            TextUtils.isEmpty(txt_base_evelyn_vendido.getText().toString())||
+                            TextUtils.isEmpty(txt_base_movilway.getText().toString())||
+                            TextUtils.isEmpty(txt_internet_anotado.getText().toString())||
+                            TextUtils.isEmpty(txt_valor_a_llegar.getText().toString())){
+                        runOnUiThread(new Runnable() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
-                                    Toast.makeText(CreateActivity.this, "Actulizado exitosamente", Toast.LENGTH_SHORT).show();
-                                    onBackPressed();
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                e.getMessage();
-                                Toast.makeText(CreateActivity.this, "Error al Actualizar " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }else {
-                        db.collection("Caja").add(cajaM)
-                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                                        if (task.isSuccessful()) {
-                                            progressLinear.setVisibility(View.GONE);
-                                            Toast.makeText(CreateActivity.this, "Creado la caja ", Toast.LENGTH_SHORT).show();
-                                            onBackPressed();
-                                        }else {
-                                            progressLinear.setVisibility(View.GONE);
-                                            Toast.makeText(CreateActivity.this, "Error al crear", Toast.LENGTH_SHORT).show();
-                                            btn_create.setEnabled(true);
-
-                                        }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                progressLinear.setVisibility(View.GONE);
+                            public void run() {
+                                Toast.makeText(CreateActivity.this, "LLena todos los campos porfavor", Toast.LENGTH_SHORT).show();
                                 btn_create.setEnabled(true);
-                                Toast.makeText(CreateActivity.this, "Errror al crear \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                progressLinear.setVisibility(View.GONE);
                             }
                         });
+                        return;
+                    }else {
+
+                        CajaM cajaM = new CajaM();
+                        cajaM.setValorCaja(getValor(txt_valor_caja.getText().toString()));
+                        cajaM.setValorCasa(getValor(txt_valor_casa.getText().toString()));
+                        cajaM.setBaseRecargaMio(getValor(txt_base_mio.getText().toString()));
+                        cajaM.setBaseRecargaEvelynBase(getValor(txt_base_evelyn_base.getText().toString()));
+                        cajaM.setBaseRecargaEvelynVendido(getValor(txt_base_evelyn_vendido.getText().toString()));
+                        cajaM.setBaseRecargaMovilway(getValor(txt_base_movilway.getText().toString()));
+                        cajaM.setInternetAnotado(getValor(txt_internet_anotado.getText().toString()));
+                        cajaM.setFechaCreado(cajaFecha);
+                        cajaM.setFechaDate(date);
+                        cajaM.setFecha(fecha);
+                        cajaM.setValorTotalAllegar(getValor(txt_valor_a_llegar.getText().toString()));
+
+                        if (isUpdate){
+                            db.collection("Caja").document(pathID).set(cajaM).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+                                        Toast.makeText(CreateActivity.this, "Actulizado exitosamente", Toast.LENGTH_SHORT).show();
+                                        onBackPressed();
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.getMessage();
+                                    Toast.makeText(CreateActivity.this, "Error al Actualizar " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }else {
+                            db.collection("Caja").add(cajaM)
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            if (task.isSuccessful()) {
+                                                progressLinear.setVisibility(View.GONE);
+                                                Toast.makeText(CreateActivity.this, "Creado la caja ", Toast.LENGTH_SHORT).show();
+                                                onBackPressed();
+                                            }else {
+                                                progressLinear.setVisibility(View.GONE);
+                                                Toast.makeText(CreateActivity.this, "Error al crear", Toast.LENGTH_SHORT).show();
+                                                btn_create.setEnabled(true);
+
+                                            }
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    progressLinear.setVisibility(View.GONE);
+                                    btn_create.setEnabled(true);
+                                    Toast.makeText(CreateActivity.this, "Errror al crear \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(CreateActivity.this, "Errores " +e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         }.start();
