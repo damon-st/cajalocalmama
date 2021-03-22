@@ -10,10 +10,13 @@
         android:id="@+id/rcy_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/linear_count"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:scrollbars="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true" />
 
     <com.rey.material.widget.ProgressView
         android:id="@+id/progress_linear"
@@ -39,9 +42,9 @@
         android:background="@drawable/rounde_circle"
         android:src="@drawable/ic_down"
         android:visibility="visible"
-        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="@dimen/_30sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_above="@+id/linear_count"
         />
 
     <LinearLayout
@@ -79,6 +82,27 @@
             />
 
 
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linear_count"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@color/purple_700"
+        >
+        <TextView
+            android:id="@+id/total_numero_cajas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:padding="@dimen/_2sdp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/ubuntu_bold"
+            android:text="Total de Cajas Echas = "/>
 
     </LinearLayout>
 

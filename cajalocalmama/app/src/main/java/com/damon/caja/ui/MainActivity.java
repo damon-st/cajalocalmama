@@ -1,21 +1,10 @@
 package com.damon.caja.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.DatePickerDialog;
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
-import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,15 +18,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.damon.caja.R;
 import com.damon.caja.adapters.CajaAdapter;
 import com.damon.caja.coneccion.CheckNetworkConnection;
 import com.damon.caja.models.CajaM;
-import com.google.android.gms.common.util.concurrent.HandlerExecutor;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.concurrent.RunnableFuture;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,11 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout linearSearch;
     private ImageView clearSearch;
-    private TextView txt_search;
+    private TextView txt_search,total_numero_cajas;
     private boolean isScrolling,isLastItemReached;
     DocumentSnapshot lastVisible;
 
     boolean isSearch = false;
+    private int totalCajasEchas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         cajaMList = new ArrayList<>();
 
+        total_numero_cajas = findViewById(R.id.total_numero_cajas);
         txt_search = findViewById(R.id.txt_search);
         clearSearch = findViewById(R.id.delete_search);
         linearSearch = findViewById(R.id.linear_search);
@@ -90,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rcy_main);
         progressView = findViewById(R.id.progress_linear);
         recyclerView.setHasFixedSize(true);
+
 
 
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -203,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
                                cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
                            }
 
+                           total_numero_cajas.setText("Total de Cajas Echas = "+ task.getResult().size());
 
                            cajaAdapter.notifyDataSetChanged();
 
@@ -249,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
                              lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
                             cajaAdapter.notifyDataSetChanged();
 
+                            totalCajasEchas = task.getResult().size();
+                            total_numero_cajas.setText("Total de Cajas Echas = "+totalCajasEchas);
 
                             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                                 @Override
@@ -295,6 +292,10 @@ public class MainActivity extends AppCompatActivity {
                                                 if (task.getResult().size() <15){
                                                     isLastItemReached = true;
                                                 }
+
+                                                totalCajasEchas += task.getResult().size();
+                                                total_numero_cajas.setText("Total de Cajas Echas = "+totalCajasEchas);
+
                                                 progressView.setVisibility(View.GONE);
                                             }
                                         });
@@ -317,11 +318,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LoadCajas();
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -334,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (cajaMList.size()>0){
+
             if (id == R.id.refresh){
                 recreate();
             }else if (id == R.id.create_Caja) {
@@ -342,30 +339,32 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }else if (id == R.id.buscarfecha){
 
-                final Calendar newCalendar = Calendar.getInstance();
-                DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        Calendar newDate = Calendar.getInstance();
-                        newDate.set(year, monthOfYear, dayOfMonth);
+                if (cajaMList.size()>0) {
+                    final Calendar newCalendar = Calendar.getInstance();
+                    DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            Calendar newDate = Calendar.getInstance();
+                            newDate.set(year, monthOfYear, dayOfMonth);
 //                inputSearch.setText(dateFormatter.format(newDate.getTime()));
-                        String searchDate = new SimpleDateFormat("EEEE, dd MMMM yyyy ")
-                                .format(newDate.getTime());
+                            String searchDate = new SimpleDateFormat("EEEE, dd MMMM yyyy ")
+                                    .format(newDate.getTime());
 
-                        setVisivilityLiner();
-                        txt_search.setText(searchDate);
+                            setVisivilityLiner();
+                            txt_search.setText(searchDate);
 
-                        cajaAdapter.searchCajaDate(searchDate);
-                        cancelTimer();
+                            cajaAdapter.searchCajaDate(searchDate);
+                            cancelTimer();
 
-                        isSearch = true;
-                    }
+                            isSearch = true;
+                        }
 
-                }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                    }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-                StartTime.show();
+                    StartTime.show();
 
+                }
             }
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
