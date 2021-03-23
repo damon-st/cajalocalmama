@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
-                Query reference  = db.collection("Caja").limit(10);
+                Query reference  = db.collection("Caja").limit(15);
 
                 reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
                                         progressView.setVisibility(View.VISIBLE);
                                         Query nextQuery  = db.collection("Caja")
                                                 .startAfter(lastVisible)
-                                                .limit(10);
+                                                .limit(15);
                                         nextQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
