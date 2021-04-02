@@ -290,7 +290,10 @@ public class MainActivity extends AppCompatActivity {
                                                     cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
                                                 }
                                                 cajaAdapter.notifyDataSetChanged();
+                                                if(task.getResult().size() >0){
+
                                                 lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
+                                                }
                                                 if (task.getResult().size() <15){
                                                     isLastItemReached = true;
                                                 }
