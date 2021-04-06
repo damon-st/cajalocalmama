@@ -20,20 +20,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.damon.caja.R;
 import com.damon.caja.holder.CajaViewHolder;
+import com.damon.caja.holder.HeaderViewHolder;
 import com.damon.caja.models.CajaM;
 import com.damon.caja.ui.CreateActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
+import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
+public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> implements StickyRecyclerHeadersAdapter<HeaderViewHolder> {
 
     private Activity activity;
     private List<CajaM> cajaMList;
@@ -232,13 +235,43 @@ public class CajaAdapter extends RecyclerView.Adapter<CajaViewHolder> {
 
 
     @Override
+    public long getHeaderId(int position) {
+        return cajaMList.get(position).getFechaDate().getMonth();
+    }
+
+    @Override
+    public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        View view = LayoutInflater.from(activity).inflate(R.layout.item_header,parent,false);
+        return new HeaderViewHolder(view);
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(HeaderViewHolder headerViewHolder, int i) {
+        headerViewHolder.item_header.setText(getMonth(cajaMList.get(i).getFechaDate().getMonth()));
+//        headerViewHolder.item_header.setBackgroundColor(getRamdonCOlor());
+    }
+
+    @Override
     public int getItemCount() {
-        if (cajaMList.size() >0){
+        if (cajaMList != null){
             return  cajaMList.size();
         }else {
             return 0;
         }
     }
 
+    private String getMonth(int position){
+        String[] meses = {"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre",
+                          "Noviembre","Diciembre"};
+
+        return meses[position];
+    }
+
+    private  int getRamdonCOlor(){
+        SecureRandom rgen = new SecureRandom();
+        return Color.HSVToColor(150,new float[]{
+                rgen.nextInt(359),1,1
+        });
+    }
 
 }

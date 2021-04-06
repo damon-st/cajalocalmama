@@ -57,4 +57,7 @@ dependencies {
     //libreria de progress var
     implementation 'com.github.rey5137:material:1.2.0'
 
+    //libreria stickerHeader
+    implementation 'com.timehop.stickyheadersrecyclerview:library:0.4.3@aar'
+
 }

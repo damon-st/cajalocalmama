@@ -38,6 +38,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.rey.material.widget.ProgressView;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         cajaAdapter = new CajaAdapter(MainActivity.this, cajaMList, db);
         recyclerView.setAdapter(cajaAdapter);
+        recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(cajaAdapter));
 
 
         new CheckNetworkConnection(MainActivity.this, new CheckNetworkConnection.OnConnectionCallback() {
