@@ -99,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
         new CheckNetworkConnection(MainActivity.this, new CheckNetworkConnection.OnConnectionCallback() {
             @Override
             public void onConnectionSuccess() {
-                LoadCajas();
+               // LoadCajas();
+                LoadCajasSinInternet();
             }
 
             @Override
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                // Source can be CACHE, SERVER, or DEFAULT.
                Source cache = Source.CACHE;
                // Get the document, forcing the SDK to use the offline cache
-               reference.get(cache).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+               reference.orderBy("fechaDate", Query.Direction.ASCENDING).get(cache).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                    @Override
                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
                        if (task.isSuccessful()){
@@ -229,7 +230,8 @@ public class MainActivity extends AppCompatActivity {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
-                Query reference  = db.collection("Caja").limit(15);
+                Query reference  = db.collection("Caja")
+                        .orderBy("fechaDate", Query.Direction.ASCENDING).limit(15);
 
                 reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -278,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
                                         isScrolling = false;
                                         progressView.setVisibility(View.VISIBLE);
                                         Query nextQuery  = db.collection("Caja")
+                                                .orderBy("fechaDate", Query.Direction.ASCENDING)
                                                 .startAfter(lastVisible)
                                                 .limit(15);
                                         nextQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
