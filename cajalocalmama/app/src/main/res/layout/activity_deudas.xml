@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.DeudasActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rcy_deudas"
+        android:scrollbars="vertical"
+        android:layout_above="@+id/linear_total"
+        />
+
+    <com.rey.material.widget.ProgressView
+        android:id="@+id/progress_linear"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_48sdp"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="597dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lpd_strokeColor="@color/purple_700"
+        app:lpd_strokeSize="10dp"
+        app:lpd_verticalAlign="center"
+        app:pv_autostart="true"
+        app:pv_circular="false"
+        app:pv_progressMode="indeterminate"
+        app:pv_progressStyle="@style/Material.Drawable.LinearProgress.Custom" />
+
+
+
+    <LinearLayout
+        android:id="@+id/linear_total"
+        android:background="@color/purple_700"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/total_deudas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_medium"
+            android:textSize="@dimen/_20ssp"
+            android:text="Total = "
+            android:textColor="@color/white"
+            android:padding="@dimen/_10sdp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

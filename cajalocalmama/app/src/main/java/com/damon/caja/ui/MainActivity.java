@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
         new CheckNetworkConnection(MainActivity.this, new CheckNetworkConnection.OnConnectionCallback() {
             @Override
             public void onConnectionSuccess() {
-               // LoadCajas();
-                LoadCajasSinInternet();
+               LoadCajas();
+
             }
 
             @Override
@@ -244,9 +244,9 @@ public class MainActivity extends AppCompatActivity {
                                 cajaM.setId(snapshot.getId());
                                 cajaMList.add(cajaM);
                             }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
-                            }
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                                cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
+//                            }
                              lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
                             cajaAdapter.notifyDataSetChanged();
 
@@ -291,9 +291,9 @@ public class MainActivity extends AppCompatActivity {
                                                     cajaM.setId(snapshot.getId());
                                                     cajaMList.add(cajaM);
                                                 }
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                                    cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
-                                                }
+//                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                                                    cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
+//                                                }
                                                 cajaAdapter.notifyDataSetChanged();
                                                 if(task.getResult().size() >0){
 
@@ -373,6 +373,9 @@ public class MainActivity extends AppCompatActivity {
                     StartTime.show();
 
                 }
+            }else if (id == R.id.deudas ){
+                Intent intent = new Intent(MainActivity.this, DeudasActivity.class);
+                startActivity(intent);
             }
 
 

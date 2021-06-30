@@ -19,5 +19,9 @@
         app:showAsAction="always"
          />
 
+    <item android:title="Deudas"
+        android:id="@+id/deudas"
+        app:showAsAction="collapseActionView"/>
+
 
 </menu>
