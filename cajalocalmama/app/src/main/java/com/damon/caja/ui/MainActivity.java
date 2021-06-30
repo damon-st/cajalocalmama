@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.damon.caja.R;
 import com.damon.caja.adapters.CajaAdapter;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rcy_main);
         progressView = findViewById(R.id.progress_linear);
         recyclerView.setHasFixedSize(true);
+
 
 
 

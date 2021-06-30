@@ -31,6 +31,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rey.material.widget.ProgressView;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,10 +52,10 @@ public class EditDeuda extends AppCompatActivity {
     private List<ValoresDeudas> valoresDeudasList = new ArrayList<>();
     private FirebaseFirestore db;
 
-    private Dialog dialogCreateDeudas;
-    private TextInputEditText txt_nombre_deudor, txt_valor_deudor;
+    private Dialog dialogCreateDeudas,dialogEditName;
+    private TextInputEditText txt_nombre_deudor, txt_valor_deudor,txt_nombre_edit;
     private TextInputLayout layout_txt_deuda_nombre;
-    private MaterialButton btn_create_deuda,btn_deuda_cancelar;
+    private MaterialButton btn_create_deuda,btn_deuda_cancelar,btn_confirm_name,btn_cancel_name;
     private MaterialTextView tv_deuda_fecha_create;
     private Date date;
     private String fechaCreate;
@@ -66,6 +67,7 @@ public class EditDeuda extends AppCompatActivity {
         setContentView(R.layout.activity_edit_deuda);
 
         dialogCreateDeudas = new Dialog(this);
+        dialogEditName = new Dialog(this);
         date = new Date();
 
         fechaCreate = new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm a", Locale.getDefault()).format(date);
@@ -85,6 +87,7 @@ public class EditDeuda extends AppCompatActivity {
         valorDeudaAdapter = new ValorDeudaAdapter(valoresDeudasList,this,db);
 
         rcv_valores_deudas.setAdapter(valorDeudaAdapter);
+        rcv_valores_deudas.addItemDecoration(new StickyRecyclerHeadersDecoration(valorDeudaAdapter));
 
         deudaM = new DeudaM();
         Intent intent = getIntent();
@@ -105,6 +108,14 @@ public class EditDeuda extends AppCompatActivity {
             valorDeudaAdapter.notifyDataSetChanged();
         }
 
+        nombre_deuda_create.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                updateName();
+                return false;
+            }
+        });
+
     }
 
 
@@ -121,13 +132,22 @@ public class EditDeuda extends AppCompatActivity {
         tv_deuda_fecha_create.setText(fechaCreate);
         progress_view_create_deuda = dialogCreateDeudas.findViewById(R.id.progress_linear_create_deuda);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            dialogCreateDeudas.create();
-        }
+
 
         dialogCreateDeudas.setCanceledOnTouchOutside(false);
 
 
+        dialogEditName.setContentView(R.layout.edit_name_deudas);
+        txt_nombre_edit = dialogEditName.findViewById(R.id.edit_name_deudor);
+        btn_confirm_name = dialogEditName.findViewById(R.id.btn_confir_name);
+        btn_cancel_name = dialogEditName.findViewById(R.id.btn_cancel);
+        dialogEditName.setCanceledOnTouchOutside(false);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dialogCreateDeudas.create();
+            dialogEditName.create();
+        }
     }
 
     @Override
@@ -202,6 +222,46 @@ public class EditDeuda extends AppCompatActivity {
                     }
                 });
             }
+        });
+
+
+    }
+
+    void  updateName(){
+        dialogEditName.show();
+        DocumentReference deudorRef = db.collection("Deudas").document(deudaM.getId());
+        txt_nombre_edit.setText(deudaM.getName());
+        btn_cancel_name.setOnClickListener(v -> {dialogEditName.dismiss();});
+        btn_confirm_name.setOnClickListener(v -> {
+           if (TextUtils.isEmpty(txt_nombre_edit.getText().toString())){
+               Toast.makeText(this, "Escribe el nombre", Toast.LENGTH_SHORT).show();
+               return;
+           }else {
+               btn_confirm_name.setEnabled(false);
+               btn_cancel_name.setEnabled(false);
+               HashMap<String,Object> deudorMap = new HashMap<>();
+               deudorMap.put("name",txt_nombre_edit.getText().toString());
+
+               deudorRef.update(deudorMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                   @Override
+                   public void onComplete(@NonNull  Task<Void> task) {
+                       if (task.isSuccessful()){
+                           btn_confirm_name.setEnabled(true);
+                           btn_cancel_name.setEnabled(true);
+                           nombre_deuda_create.setText(txt_nombre_edit.getText().toString());
+                           txt_nombre_edit.setText("");
+                           dialogEditName.dismiss();
+                       }
+                   }
+               }).addOnFailureListener(new OnFailureListener() {
+                   @Override
+                   public void onFailure(@NonNull  Exception e) {
+                       btn_confirm_name.setEnabled(true);
+                       btn_cancel_name.setEnabled(true);
+                       Toast.makeText(EditDeuda.this, "Error al actualizar nombre " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                   }
+               });
+           }
         });
     }
 }

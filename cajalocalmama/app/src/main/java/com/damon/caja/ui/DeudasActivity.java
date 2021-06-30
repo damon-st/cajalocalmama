@@ -5,13 +5,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -57,7 +60,7 @@ public class DeudasActivity extends AppCompatActivity {
     private ProgressView progressView;
 
     private Dialog dialogCreateDeudas;
-    private TextInputEditText txt_nombre_deudor, txt_valor_deudor;
+    private TextInputEditText txt_nombre_deudor, txt_valor_deudor,txt_search_deuda;
     private MaterialButton btn_create_deuda,btn_deuda_cancelar;
     private MaterialTextView tv_deuda_fecha_create;
     private Date date;
@@ -80,9 +83,12 @@ public class DeudasActivity extends AppCompatActivity {
         rcv_deudas = findViewById(R.id.rcy_deudas);
         txt_total = findViewById(R.id.total_deudas);
         progressView = findViewById(R.id.progress_linear);
+        txt_search_deuda = findViewById(R.id.txt_search_deuda);
+
+        StaggeredGridLayoutManager staggeredGridLayoutManager  =new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
 
         linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-        rcv_deudas.setLayoutManager(linearLayoutManager);
+        rcv_deudas.setLayoutManager(staggeredGridLayoutManager );
         rcv_deudas.setHasFixedSize(true);
 
         deudaAdapter = new DeudaAdapter(deudaMList,this, db);
@@ -92,6 +98,25 @@ public class DeudasActivity extends AppCompatActivity {
 
 
         initialiceDialog();
+
+        txt_search_deuda.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                deudaAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (deudaMList.size()>0){
+                    deudaAdapter.buscarDeduda(s.toString());
+                }
+            }
+        });
 
     }
 
@@ -240,9 +265,18 @@ public class DeudasActivity extends AppCompatActivity {
                                        @Override
                                        public void onComplete(@NonNull Task<Void> task) {
                                            if (task.isSuccessful()){
+                                               List<ValoresDeudas> list_valores = new ArrayList<>();
+                                               list_valores.add(valoresDeudas);
+                                               deudaM.setValor(list_valores);
+                                               deudaMList.add(deudaM);
+                                               deudaAdapter.notifyDataSetChanged();
                                                progress_view_create_deuda.setVisibility(View.GONE);
-                                               dialogCreateDeudas.dismiss();
+                                               txt_total.setText("Total = "+formatDouble(deudaAdapter.getTotalDeuda()));
+                                               txt_nombre_deudor.setText("");
+                                               txt_valor_deudor.setText("");
                                                btn_create_deuda.setEnabled(true);
+                                               dialogCreateDeudas.dismiss();
+
                                            }
                                        }
                                    }).addOnFailureListener(new OnFailureListener() {

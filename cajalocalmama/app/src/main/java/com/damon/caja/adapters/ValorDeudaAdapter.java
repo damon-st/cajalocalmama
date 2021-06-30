@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.damon.caja.R;
+import com.damon.caja.holder.HeaderViewHolder;
 import com.damon.caja.holder.ValorDeudaViewHolder;
 import com.damon.caja.models.ValoresDeudas;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rey.material.widget.ProgressView;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -30,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
-public class ValorDeudaAdapter extends RecyclerView.Adapter<ValorDeudaViewHolder> {
+public class ValorDeudaAdapter extends RecyclerView.Adapter<ValorDeudaViewHolder>  implements StickyRecyclerHeadersAdapter<HeaderViewHolder> {
 
     List<ValoresDeudas> valoresDeudasList;
     Activity activity;
@@ -114,6 +116,7 @@ public class ValorDeudaAdapter extends RecyclerView.Adapter<ValorDeudaViewHolder
             public void onComplete(@NonNull  Task<Void> task) {
                 if (task.isSuccessful()){
                     progressView.setVisibility(View.GONE);
+                    valoresDeudasList.remove(position);
                     notifyItemRemoved(position);
                 }
             }
@@ -146,7 +149,12 @@ public class ValorDeudaAdapter extends RecyclerView.Adapter<ValorDeudaViewHolder
                                 progressView.setVisibility(View.GONE);
                                 valoresDeudas.setPay(true);
                                 valoresDeudas.setPayDate(date);
-                                notifyItemChanged(position,valoresDeudas);
+                               try {
+                                   valoresDeudasList.set(position,valoresDeudas);
+                                   notifyItemChanged(position,valoresDeudas);
+                               }catch (Exception e){
+                                   Toast.makeText(activity, "Error al actulizar el listado aqui "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                               }
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -176,6 +184,29 @@ public class ValorDeudaAdapter extends RecyclerView.Adapter<ValorDeudaViewHolder
 
     private String formatFecha(Date date){
         return  new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm a", Locale.getDefault()).format(date);
+    }
+
+    @Override
+    public long getHeaderId(int position) {
+        return valoresDeudasList.get(position).getRegisterDate().getMonth();
+    }
+
+    @Override
+    public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        View view = LayoutInflater.from(activity).inflate(R.layout.item_header,parent,false);
+        return new HeaderViewHolder(view);
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(HeaderViewHolder holder, int i) {
+        holder.item_header.setText(getMonth(valoresDeudasList.get(i).getRegisterDate().getMonth()));
+    }
+
+    private String getMonth(int position){
+        String[] meses = {"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre",
+                "Noviembre","Diciembre"};
+
+        return meses[position];
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,20 +32,25 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
 
-    private List<DeudaM> deudaMList;
+    private List<DeudaM> deudaMList,deudaSoruceList;
     private Activity activity;
     private FirebaseFirestore db;
+    private Timer timer;
 
     public DeudaAdapter(List<DeudaM> deudaMList, Activity activity,FirebaseFirestore db) {
         this.deudaMList = deudaMList;
         this.activity = activity;
         this.db = db;
+        this.deudaSoruceList = deudaMList;
     }
 
     @NonNull
@@ -57,13 +64,16 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
     public void onBindViewHolder(@NonNull  DeudasViewHolder holder, int position) {
         DeudaM deudaM = deudaMList.get(position);
 
-        holder.fecha.setText(deudaM.getDate());
-        holder.nombre.setText(deudaM.getName());
+        holder.fecha.setText("Fecha del registro: \n"+deudaM.getDate());
+        holder.nombre.setText("Nombre deudor: \n"+deudaM.getName());
 
-        holder.valor.setText("Valor = " + formatDouble(getValor(deudaM)));
+        holder.valor.setText("Valor = $" + formatDouble(getValor(deudaM)));
 
         if (deudaM.isPay()){
             holder.colorDeuda.setBackgroundColor(activity.getResources().getColor(R.color.success));
+        }else {
+
+            holder.colorDeuda.setBackgroundColor(activity.getResources().getColor(R.color.warning));
         }
 
         holder.btn_options.setOnClickListener(v -> {
@@ -172,6 +182,41 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
     }
 
 
+    public void buscarDeduda(String nombre){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (nombre.trim().isEmpty()){
+                    deudaMList = deudaSoruceList;
+                }else {
+                    ArrayList<DeudaM> deudaMArrayList = new ArrayList<>();
+                    for (DeudaM deudaM : deudaSoruceList){
+                        if (deudaM.getName().trim().toLowerCase().contains(nombre.trim().toLowerCase())){
+                            deudaMArrayList.add(deudaM);
+                        }
+                    }
+
+                    deudaMList = deudaMArrayList;
+                }
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+
+            }
+        },500);
+    }
+
+    public void cancelTimer(){
+        if (timer !=null){
+            timer.cancel();
+        }
+    }
+
 
     @Override
     public int getItemCount() {
@@ -181,4 +226,5 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
             return 0;
         }
     }
+
 }
