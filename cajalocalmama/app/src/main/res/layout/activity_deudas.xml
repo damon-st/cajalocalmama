@@ -8,7 +8,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_50sdp"
+        android:layout_height="wrap_content"
         app:cardElevation="@dimen/_10sdp"
         app:cardCornerRadius="@dimen/_15sdp"
         android:layout_margin="@dimen/_5sdp"
@@ -18,11 +18,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Buscar por nombre"
+            app:boxBackgroundColor="@color/purple_500"
+            android:textColorHint="@color/white"
             >
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/txt_search_deuda"/>
+                android:id="@+id/txt_search_deuda"
+                android:textColor="@color/white"
+                android:drawableStart="@drawable/ic_search"
+                android:layout_gravity="center_vertical"
+                tools:ignore="RtlCompat" />
         </com.google.android.material.textfield.TextInputLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -70,7 +76,12 @@
             android:textSize="@dimen/_20ssp"
             android:text="Total = "
             android:textColor="@color/white"
-            android:padding="@dimen/_10sdp"/>
+            android:padding="@dimen/_10sdp"
+            android:drawableStart="@drawable/ic_money"
+            tools:ignore="RtlCompat"
+            app:drawableTint="@color/white"
+            android:layout_gravity="center_vertical"
+            />
 
     </LinearLayout>
 

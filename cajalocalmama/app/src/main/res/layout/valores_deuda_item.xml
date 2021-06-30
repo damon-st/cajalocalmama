@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,7 +20,6 @@
             android:id="@+id/progress_valor_deuda"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_10sdp"
-            android:layout_alignParentTop="true"
             android:layout_marginBottom="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,9 @@
             android:fontFamily="@font/ubuntu_medium"
             android:textSize="@dimen/_15sdp"
             android:text="registro"
-            android:id="@+id/valor_fecha_registro"/>
+            android:id="@+id/valor_fecha_registro"
+            android:drawableStart="@drawable/ic_time"
+            tools:ignore="RtlCompat" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_marginTop="@dimen/_10sdp"
@@ -55,7 +57,9 @@
             android:fontFamily="@font/ubuntu_medium"
             android:textSize="@dimen/_15sdp"
             android:text="pagado"
-            android:id="@+id/valor_fecha_pagado"/>
+            android:id="@+id/valor_fecha_pagado"
+            android:drawableStart="@drawable/ic_time"
+            tools:ignore="RtlCompat" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,7 +75,8 @@
                 android:text="Valor = "
                 android:id="@+id/valor_deuda"
                 android:layout_weight="1"
-                />
+                android:drawableStart="@drawable/ic_money"
+                tools:ignore="RtlCompat" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="wrap_content"
