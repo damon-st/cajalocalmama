@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/deuda_refresh"
+        android:title="Actualizar"
+        android:icon="@drawable/ic_refresh"
+        app:showAsAction="always|collapseActionView"/>
+    <item android:id="@+id/deudas_crear"
+        android:title="Crear Deudas"/>
+
+</menu>

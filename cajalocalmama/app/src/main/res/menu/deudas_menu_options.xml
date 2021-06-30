@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/deuda_edit"
+        android:title="Ediar o Actualizar"
+        />
+    <item android:title="Eliminar deuda"
+        android:id="@+id/deuda_delete"/>
+
+</menu>

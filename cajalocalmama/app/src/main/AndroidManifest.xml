@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Caja">
-        <activity android:name=".ui.DeudasActivity"></activity>
+        <activity android:name=".ui.EditDeuda"></activity>
+        <activity android:name=".ui.DeudasActivity" />
         <activity
             android:name=".ui.CreateActivity"
             android:screenOrientation="portrait" />

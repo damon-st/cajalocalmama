@@ -1,8 +1,9 @@
 package com.damon.caja.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ValoresDeudas {
+public class ValoresDeudas implements Serializable {
     private double valor;
     private boolean isPay;
     private Date registerDate;

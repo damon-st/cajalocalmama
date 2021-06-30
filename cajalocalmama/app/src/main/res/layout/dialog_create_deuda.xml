@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_10sdp"
+    app:cardElevation="@dimen/_15sdp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.rey.material.widget.ProgressView
+            android:visibility="gone"
+            android:id="@+id/progress_linear_create_deuda"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            app:lpd_strokeColor="@color/purple_700"
+            app:lpd_strokeSize="@dimen/_48sdp"
+            app:lpd_verticalAlign="center"
+            app:pv_autostart="true"
+            app:pv_circular="false"
+            app:pv_progressMode="indeterminate"
+            app:pv_progressStyle="@style/Material.Drawable.LinearProgress.Custom" />
+
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha"
+            android:layout_margin="@dimen/_10sdp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:textSize="@dimen/_15ssp"
+            android:id="@+id/tv_deuda_fecha_create"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:hint="Nombre del deudor"
+            android:id="@+id/layout_txt_deuda_nombre"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_deuda_nombre"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:hint="Valor del Deudor"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_deuda_valor"
+                android:inputType="numberDecimal"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="Cancelar"
+                android:id="@+id/btn_deuda_cancelar"
+                android:layout_weight="1"
+                android:backgroundTint="@color/warning"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:text="Crear"
+                android:id="@+id/btn_deuda_crear"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>
