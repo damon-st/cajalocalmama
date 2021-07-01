@@ -15,7 +15,9 @@
         android:text="Fecha"
         android:textSize="@dimen/_18sdp"
         android:layout_margin="@dimen/_10sdp"
-        android:id="@+id/fecha_deuda_create"/>
+        android:id="@+id/fecha_deuda_create"
+        android:drawableStart="@drawable/ic_time"
+        tools:ignore="RtlCompat" />
 
 
     <com.google.android.material.textview.MaterialTextView
@@ -25,7 +27,10 @@
         android:text="Nombre"
         android:textSize="@dimen/_18sdp"
         android:layout_margin="@dimen/_10sdp"
-        android:id="@+id/nombre_deuda_create"/>
+        android:id="@+id/nombre_deuda_create"
+        android:drawableStart="@drawable/ic_person"
+        tools:ignore="RtlCompat" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

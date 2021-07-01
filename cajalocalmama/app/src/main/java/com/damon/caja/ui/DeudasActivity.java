@@ -88,7 +88,8 @@ public class DeudasActivity extends AppCompatActivity {
         StaggeredGridLayoutManager staggeredGridLayoutManager  =new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
 
         linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-        rcv_deudas.setLayoutManager(staggeredGridLayoutManager );
+//        staggeredGridLayoutManager.setReverseLayout(true);
+        rcv_deudas.setLayoutManager(staggeredGridLayoutManager);
         rcv_deudas.setHasFixedSize(true);
 
         deudaAdapter = new DeudaAdapter(deudaMList,this, db);
