@@ -161,7 +161,7 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
 
     public double getTotalDeuda(){
         double valor = 0;
-        if (deudaMList.size()>0){
+        if (deudaMList !=null && deudaMList.size()>0){
             for (int  i =0; i < deudaMList.size() ; i++){
                 for (ValoresDeudas deuda: deudaMList.get(i).getValor()){
                     if (!deuda.isPay()){
