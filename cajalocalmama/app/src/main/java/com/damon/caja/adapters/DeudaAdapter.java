@@ -235,6 +235,7 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
         cancelado = !cancelado;
         if (pendiente){
             deudaMList = deudaSoruceList;
+            cancelado = true;
         }
 
         if (cancelado){
@@ -261,6 +262,7 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
         pendiente = !pendiente;
         if (cancelado){
             deudaMList = deudaSoruceList;
+            pendiente = true;
         }
 
         if (pendiente){

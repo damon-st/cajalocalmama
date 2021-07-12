@@ -16,7 +16,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentLeft="true"
+
+        >
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcy_main"

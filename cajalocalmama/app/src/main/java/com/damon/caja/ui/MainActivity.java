@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.damon.caja.R;
@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     private int totalCajasEchas;
 
     private SwipeRefreshLayout refresh_caja;
+    private float newDx;
+    private float newDy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,9 +139,9 @@ public class MainActivity extends AppCompatActivity {
                 clearSearch();
             }
         });
-//        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-//        int width = metrics.widthPixels;
-//        int height = metrics.heightPixels;
+        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
 
         linearSearch.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -151,13 +153,23 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case MotionEvent.ACTION_MOVE:
 
-//                            view.animate()
-//                                    .x(event.getRawX() + dX)
-//                                    .y(event.getRawY() + dY)
-//                                    .setDuration(0)
-//                                    .start();
-                        view.setTranslationX(event.getRawX() + dX);
-                        view.setTranslationY(event.getRawY() + dY);
+
+                        newDx = event.getRawX() + dX;
+                        newDy = event.getRawY() + dY;
+
+                        if ((newDx <=0 || newDx>= width-view.getWidth()) ||
+                                newDy <=0 || newDy>= height-view.getHeight() ){
+                            return true;
+                        }
+
+                        view.animate()
+                                .x(newDx)
+                                .y(newDy)
+                                .setDuration(0)
+                                .start();
+
+//                        view.setTranslationX(newDx);
+//                        view.setTranslationY(newDy);
 
                         break;
                     default:
@@ -377,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
 
                  progressView.setVisibility(View.GONE);
                  refresh_caja.setRefreshing(false);
-                 linearLayoutManager.scrollToPositionWithOffset(10,0);
+                 linearLayoutManager.scrollToPositionWithOffset(15,0);
              }
          });
     }
