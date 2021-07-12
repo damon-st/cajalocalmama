@@ -6,31 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".ui.DeudasActivity">
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardElevation="@dimen/_10sdp"
-        app:cardCornerRadius="@dimen/_15sdp"
-        android:layout_margin="@dimen/_5sdp"
-        android:layout_alignParentTop="true"
-        android:id="@+id/card_search">
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Buscar por nombre"
-            app:boxBackgroundColor="@color/purple_500"
-            android:textColorHint="@color/white"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/txt_search_deuda"
-                android:textColor="@color/white"
-                android:drawableStart="@drawable/ic_search"
-                android:layout_gravity="center_vertical"
-                tools:ignore="RtlCompat" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </com.google.android.material.card.MaterialCardView>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:id="@+id/card_search"
+       android:layout_alignParentTop="true"
+       android:layout_alignParentEnd="true"
+       android:layout_alignParentRight="true"
+       android:layout_alignParentLeft="true"
+       android:layout_margin="@dimen/_5sdp"
+
+       >
+       <com.google.android.material.card.MaterialCardView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           app:cardElevation="@dimen/_10sdp"
+           app:cardCornerRadius="@dimen/_15sdp"
+           android:layout_margin="@dimen/_5sdp"
+           android:layout_alignParentTop="true"
+           android:layout_weight="1"
+           >
+           <com.google.android.material.textfield.TextInputLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:hint="Buscar por nombre"
+               app:boxBackgroundColor="@color/purple_500"
+               android:textColorHint="@color/white"
+               >
+               <com.google.android.material.textfield.TextInputEditText
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/txt_search_deuda"
+                   android:textColor="@color/white"
+                   android:drawableStart="@drawable/ic_search"
+                   android:layout_gravity="center_vertical"
+                   tools:ignore="RtlCompat" />
+           </com.google.android.material.textfield.TextInputLayout>
+       </com.google.android.material.card.MaterialCardView>
+
+       <ImageView
+           android:id="@+id/filter_deuda"
+           android:layout_width="@dimen/_50sdp"
+           android:layout_height="@dimen/_50sdp"
+           android:src="@drawable/ic_filter"
+           android:layout_weight="1"
+           app:tint="@color/purple_500" />
+
+   </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

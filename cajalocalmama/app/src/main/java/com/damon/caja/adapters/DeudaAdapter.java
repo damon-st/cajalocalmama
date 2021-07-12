@@ -132,7 +132,7 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
                        reference.delete();
                    }
                    deudaMList.remove(position);
-                   notifyDataSetChanged();
+                   notifyItemRemoved(position);
 
                }else {
                    Toast.makeText(activity, "Error al eliminar la deuda algo salio mal " , Toast.LENGTH_SHORT).show();
@@ -161,14 +161,17 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
 
     public double getTotalDeuda(){
         double valor = 0;
-        if (deudaMList !=null && deudaMList.size()>0){
-            for (int  i =0; i < deudaMList.size() ; i++){
-                for (ValoresDeudas deuda: deudaMList.get(i).getValor()){
-                    if (!deuda.isPay()){
-                        valor+= deuda.getValor();
+        if (deudaMList !=null ){
+            if (deudaMList.size()>0){
+                for (int  i =0; i < deudaMList.size() ; i++){
+                    for (ValoresDeudas deuda: deudaMList.get(i).getValor()){
+                        if (!deuda.isPay()){
+                            valor+= deuda.getValor();
+                        }
                     }
                 }
             }
+
         }
         return valor;
 
@@ -227,4 +230,52 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
         }
     }
 
+    boolean cancelado,pendiente;
+    public void filterForCancelado() {
+        cancelado = !cancelado;
+        if (pendiente){
+            deudaMList = deudaSoruceList;
+        }
+
+        if (cancelado){
+
+            ArrayList<DeudaM> temp = new ArrayList();
+
+            for (DeudaM deudaM : deudaSoruceList){
+                if (deudaM.isPay()){
+                    temp.add(deudaM);
+                }
+            }
+
+            deudaMList = temp;
+
+            notifyDataSetChanged();
+
+        }else {
+            deudaMList = deudaSoruceList;
+            notifyDataSetChanged();
+        }
+    }
+
+    public void filterForPendiente() {
+        pendiente = !pendiente;
+        if (cancelado){
+            deudaMList = deudaSoruceList;
+        }
+
+        if (pendiente){
+            ArrayList<DeudaM> temp = new ArrayList<>();
+            for (DeudaM deudaM: deudaSoruceList){
+                if (!deudaM.isPay()){
+                    temp.add(deudaM);
+                }
+            }
+            deudaMList = temp;
+            notifyDataSetChanged();
+
+        }else {
+            deudaMList = deudaSoruceList;
+            notifyDataSetChanged();
+        }
+    }
 }

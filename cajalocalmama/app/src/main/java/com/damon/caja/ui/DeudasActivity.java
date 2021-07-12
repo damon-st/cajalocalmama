@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.damon.caja.R;
@@ -67,6 +69,8 @@ public class DeudasActivity extends AppCompatActivity {
     private String fechaCreate;
     private ProgressView progress_view_create_deuda;
 
+    private ImageView filter_deuda;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +88,7 @@ public class DeudasActivity extends AppCompatActivity {
         txt_total = findViewById(R.id.total_deudas);
         progressView = findViewById(R.id.progress_linear);
         txt_search_deuda = findViewById(R.id.txt_search_deuda);
+        filter_deuda = findViewById(R.id.filter_deuda);
 
         StaggeredGridLayoutManager staggeredGridLayoutManager  =new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
 
@@ -119,6 +124,33 @@ public class DeudasActivity extends AppCompatActivity {
             }
         });
 
+        filter_deuda.setOnClickListener(v -> {
+           showFilterMenu(v);
+        });
+
+    }
+
+    private void showFilterMenu(View v) {
+        PopupMenu popupMenu = new PopupMenu(this,v);
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.deuda_cancelado){
+                    deudaAdapter.filterForCancelado();
+                }else if (id ==R.id.deuda_pendiente){
+                    deudaAdapter.filterForPendiente();
+                }
+
+                return false;
+            }
+        });
+
+
+        popupMenu.inflate(R.menu.menu_filter_deuda);
+        popupMenu.show();
     }
 
     void initialiceDialog(){

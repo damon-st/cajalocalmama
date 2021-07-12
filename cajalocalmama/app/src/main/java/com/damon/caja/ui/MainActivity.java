@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.damon.caja.R;
 import com.damon.caja.adapters.CajaAdapter;
@@ -61,12 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout linearSearch;
     private ImageView clearSearch;
-    private TextView txt_search,total_numero_cajas;
-    private boolean isScrolling,isLastItemReached;
+    private TextView txt_search, total_numero_cajas;
+    private boolean isScrolling, isLastItemReached;
     DocumentSnapshot lastVisible;
 
     boolean isSearch = false;
     private int totalCajasEchas;
+
+    private SwipeRefreshLayout refresh_caja;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +87,12 @@ public class MainActivity extends AppCompatActivity {
         clearSearch = findViewById(R.id.delete_search);
         linearSearch = findViewById(R.id.linear_search);
         btn_move_down = findViewById(R.id.btn_move_down);
+
+        refresh_caja = findViewById(R.id.refresh_caja);
+
         recyclerView = findViewById(R.id.rcy_main);
         progressView = findViewById(R.id.progress_linear);
         recyclerView.setHasFixedSize(true);
-
-
 
 
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -101,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         new CheckNetworkConnection(MainActivity.this, new CheckNetworkConnection.OnConnectionCallback() {
             @Override
             public void onConnectionSuccess() {
-               LoadCajas();
+                LoadCajas();
 
             }
 
@@ -112,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 btn_move_down.setVisibility(View.GONE);
             }
         }).execute();
-
-
 
 
         btn_move_down.setOnClickListener(v -> {
@@ -131,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         clearSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 clearSearch();
             }
         });
@@ -153,14 +156,27 @@ public class MainActivity extends AppCompatActivity {
 //                                    .y(event.getRawY() + dY)
 //                                    .setDuration(0)
 //                                    .start();
-                            view.setTranslationX(event.getRawX()+dX);
-                            view.setTranslationY(event.getRawY()+dY);
+                        view.setTranslationX(event.getRawX() + dX);
+                        view.setTranslationY(event.getRawY() + dY);
 
                         break;
                     default:
                         return false;
                 }
                 return true;
+            }
+        });
+
+
+        refresh_caja.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!isLastItemReached){
+                    progressView.setVisibility(View.VISIBLE);
+                loadMoreCaja();
+                }else {
+                    refresh_caja.setRefreshing(false);
+                }
             }
         });
     }
@@ -176,90 +192,98 @@ public class MainActivity extends AppCompatActivity {
     private float dY;
 
 
-
-    private void LoadCajasSinInternet(){
-       new Thread(){
-           @Override
-           public void run() {
-               super.run();
-               progressView.setVisibility(View.VISIBLE);
-               CollectionReference reference = db.collection("Caja");
-
-               // Source can be CACHE, SERVER, or DEFAULT.
-               Source cache = Source.CACHE;
-               // Get the document, forcing the SDK to use the offline cache
-               reference.orderBy("fechaDate", Query.Direction.ASCENDING).get(cache).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                   @Override
-                   public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                       if (task.isSuccessful()){
-                           progressView.setVisibility(View.GONE);
-                           cajaMList.clear();
-                           for (QueryDocumentSnapshot snapshot : task.getResult()){
-                               CajaM cajaM = snapshot.toObject(CajaM.class);
-                               cajaM.setId(snapshot.getId());
-                               cajaMList.add(cajaM);
-                           }
-
-                           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                               cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
-                           }
-
-                           total_numero_cajas.setText("Total de Cajas Echas = "+ task.getResult().size());
-
-                           cajaAdapter.notifyDataSetChanged();
-
-
-
-                       }else {
-                           progressView.setVisibility(View.GONE);
-                       }
-                   }
-               }).addOnFailureListener(new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-                       Toast.makeText(MainActivity.this, "Ocurrio un error al cargar los datos\n"+e.getMessage() , Toast.LENGTH_SHORT).show();
-                       progressView.setVisibility(View.GONE);
-                   }
-               });
-           }
-       }.start();
-    }
-
-
-    float y = 0;
-    private void LoadCajas(){
-        progressView.setVisibility(View.VISIBLE);
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
+    private void LoadCajasSinInternet() {
+        new Thread() {
             @Override
             public void run() {
-                Query reference  = db.collection("Caja")
-                        .orderBy("fechaDate", Query.Direction.ASCENDING).limit(15);
+                super.run();
+                progressView.setVisibility(View.VISIBLE);
+                CollectionReference reference = db.collection("Caja");
 
-                reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                // Source can be CACHE, SERVER, or DEFAULT.
+                Source cache = Source.CACHE;
+                // Get the document, forcing the SDK to use the offline cache
+                reference.orderBy("fechaDate", Query.Direction.ASCENDING).get(cache).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             progressView.setVisibility(View.GONE);
                             cajaMList.clear();
-                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                 CajaM cajaM = snapshot.toObject(CajaM.class);
                                 cajaM.setId(snapshot.getId());
                                 cajaMList.add(cajaM);
                             }
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                                cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
-//                            }
-                             lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                cajaMList.sort((c1, ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
+                            }
+
+                            total_numero_cajas.setText("Total de Cajas Echas = " + task.getResult().size());
+
+                            cajaAdapter.notifyDataSetChanged();
+
+
+                        } else {
+                            progressView.setVisibility(View.GONE);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Ocurrio un error al cargar los datos\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        progressView.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }.start();
+    }
+
+
+    float y = 0;
+
+    private void LoadCajas() {
+        progressView.setVisibility(View.VISIBLE);
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                Query reference = db.collection("Caja")
+                        .orderBy("fechaDate", Query.Direction.DESCENDING).limit(15);
+
+                reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            progressView.setVisibility(View.GONE);
+                            cajaMList.clear();
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                CajaM cajaM = snapshot.toObject(CajaM.class);
+                                cajaM.setId(snapshot.getId());
+                                itemCaja++;
+
+                                if (itemCaja ==1){
+                                    String cajakey = snapshot.getId();
+                                    mLastKey = cajakey;
+                                    mPrevKey = cajakey;
+                                }
+
+                                cajaMList.add(cajaM);
+
+                            }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
+                            }
+                            lastVisible = task.getResult().getDocuments().get(task.getResult().size() - 1);
                             cajaAdapter.notifyDataSetChanged();
 
                             totalCajasEchas = task.getResult().size();
-                            total_numero_cajas.setText("Total de Cajas Echas = "+totalCajasEchas);
+                            total_numero_cajas.setText("Total de Cajas Echas = " + totalCajasEchas);
 
                             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                                 @Override
                                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                                     super.onScrollStateChanged(recyclerView, newState);
-                                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                                         isScrolling = true;
                                     }
                                 }
@@ -278,44 +302,17 @@ public class MainActivity extends AppCompatActivity {
                                         btn_move_down.setVisibility(View.VISIBLE);
                                     }
 
-                                    if (isScrolling  &&(visibleItemCount+pastVisibleItem == totalItemCount)&& !isLastItemReached){
+                                    if (isScrolling && (visibleItemCount + pastVisibleItem == totalItemCount) && !isLastItemReached) {
                                         isScrolling = false;
-                                        progressView.setVisibility(View.VISIBLE);
-                                        Query nextQuery  = db.collection("Caja")
-                                                .orderBy("fechaDate", Query.Direction.ASCENDING)
-                                                .startAfter(lastVisible)
-                                                .limit(15);
-                                        nextQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                for (QueryDocumentSnapshot snapshot : task.getResult()){
-                                                    CajaM cajaM = snapshot.toObject(CajaM.class);
-                                                    cajaM.setId(snapshot.getId());
-                                                    cajaMList.add(cajaM);
-                                                }
-//                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                                                    cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
-//                                                }
-                                                cajaAdapter.notifyDataSetChanged();
-                                                if(task.getResult().size() >0){
+//                                        progressView.setVisibility(View.VISIBLE);
 
-                                                lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                                }
-                                                if (task.getResult().size() <15){
-                                                    isLastItemReached = true;
-                                                }
-
-                                                totalCajasEchas += task.getResult().size();
-                                                total_numero_cajas.setText("Total de Cajas Echas = "+totalCajasEchas);
-
-                                                progressView.setVisibility(View.GONE);
-                                            }
-                                        });
                                     }
                                 }
                             });
 
-                        }else {
+                            recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+
+                        } else {
                             progressView.setVisibility(View.GONE);
                         }
                     }
@@ -323,13 +320,67 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressView.setVisibility(View.GONE);
-                        Toast.makeText(MainActivity.this, "Error Base de datos \n"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Error Base de datos \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
     }
 
+    private int itemCaja = 0;
+    private String mLastKey,mPrevKey;
+
+     void  loadMoreCaja(){
+         Query nextQuery  = db.collection("Caja")
+                 .orderBy("fechaDate", Query.Direction.DESCENDING)
+                 .startAfter(lastVisible)
+                 .limit(15);
+         nextQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+             @Override
+             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                 for (QueryDocumentSnapshot snapshot : task.getResult()){
+                     CajaM cajaM = snapshot.toObject(CajaM.class);
+                     cajaM.setId(snapshot.getId());
+
+                     String cajaKey = snapshot.getId();
+
+                     if (!mPrevKey.equals(cajaKey)){
+
+
+                         cajaMList.add(itemCaja++,cajaM);
+
+                     }else {
+                         mPrevKey = mLastKey;
+                     }
+
+
+                     if (itemCaja ==1){
+                         mLastKey = cajaKey;
+                     }
+
+
+                 }
+                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                     cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
+                 }
+                 cajaAdapter.notifyDataSetChanged();
+                 if(task.getResult().size() >0){
+
+                     lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
+                 }
+                 if (task.getResult().size() <15){
+                     isLastItemReached = true;
+                 }
+
+                 totalCajasEchas += task.getResult().size();
+                 total_numero_cajas.setText("Total de Cajas Echas = "+totalCajasEchas);
+
+                 progressView.setVisibility(View.GONE);
+                 refresh_caja.setRefreshing(false);
+                 linearLayoutManager.scrollToPositionWithOffset(10,0);
+             }
+         });
+    }
 
 
     @Override
