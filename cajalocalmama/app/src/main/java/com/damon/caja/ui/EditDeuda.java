@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -60,6 +61,7 @@ public class EditDeuda extends AppCompatActivity {
     private Date date;
     private String fechaCreate;
     private ProgressView progress_view_create_deuda;
+    private ImageView btn_edit_nombre;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class EditDeuda extends AppCompatActivity {
         txt_fecha_create = findViewById(R.id.fecha_deuda_create);
         nombre_deuda_create = findViewById(R.id.nombre_deuda_create);
         rcv_valores_deudas = findViewById(R.id.rcv_valores_deudas);
+        btn_edit_nombre = findViewById(R.id.btn_edit_nombre_deudor);
 
         layoutManager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
 
@@ -97,8 +100,8 @@ public class EditDeuda extends AppCompatActivity {
         if (intent.getExtras() != null){
             Bundle bundle = intent.getExtras();
             deudaM =(DeudaM) bundle.getSerializable("deuda");
-            txt_fecha_create.setText("Fecha de Registro: \n"+deudaM.getDate());
-            nombre_deuda_create.setText("Nombre del Deudor: \n "+deudaM.getName());
+            txt_fecha_create.setText(deudaM.getDate());
+            nombre_deuda_create.setText(deudaM.getName());
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 deudaM.getValor().sort((ca1,ca2)->ca1.getRegisterDate().compareTo(ca2.getRegisterDate()));
@@ -108,12 +111,8 @@ public class EditDeuda extends AppCompatActivity {
             valorDeudaAdapter.notifyDataSetChanged();
         }
 
-        nombre_deuda_create.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                updateName();
-                return false;
-            }
+        btn_edit_nombre.setOnClickListener(v -> {
+            updateName();
         });
 
     }
