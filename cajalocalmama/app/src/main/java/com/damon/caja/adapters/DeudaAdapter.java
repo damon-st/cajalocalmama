@@ -161,18 +161,23 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
 
     public double getTotalDeuda(){
         double valor = 0;
-        if (deudaMList !=null ){
-            if (deudaMList.size()>0){
-                for (int  i =0; i < deudaMList.size() ; i++){
-                    for (ValoresDeudas deuda: deudaMList.get(i).getValor()){
-                        if (!deuda.isPay()){
-                            valor+= deuda.getValor();
-                        }
-                    }
-                }
-            }
+        try{
+          if (deudaMList !=null ){
+              if (deudaMList.size()>0){
+                  for (int  i =0; i < deudaMList.size() ; i++){
+                      for (ValoresDeudas deuda: deudaMList.get(i).getValor()){
+                          if (!deuda.isPay()){
+                              valor+= deuda.getValor();
+                          }
+                      }
+                  }
+              }
 
-        }
+          }
+      }catch (Exception e){
+          e.printStackTrace();
+          return 0;
+      }
         return valor;
 
     }
