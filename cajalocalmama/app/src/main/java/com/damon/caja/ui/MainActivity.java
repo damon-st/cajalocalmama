@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -32,6 +33,8 @@ import com.damon.caja.models.CajaM;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -73,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
     private float newDx;
     private float newDy;
 
+
+    BottomAppBar bottomAppBar;
+    FloatingActionButton btn_add;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
         btn_move_down = findViewById(R.id.btn_move_down);
 
         refresh_caja = findViewById(R.id.refresh_caja);
+        bottomAppBar = findViewById(R.id.bottomAppBar);
+        btn_add = findViewById(R.id.btn_add);
 
         recyclerView = findViewById(R.id.rcy_main);
         progressView = findViewById(R.id.progress_linear);
@@ -162,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         }
 
+
                         view.animate()
                                 .x(newDx)
                                 .y(newDy)
@@ -191,6 +201,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btn_add.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this,CreateActivity.class);
+            startActivity(intent);
+        });
+
+        menu();
     }
 
     private void clearSearch() {
@@ -231,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                                 cajaMList.sort((c1, ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
                             }
 
-                            total_numero_cajas.setText("Total de Cajas Echas = " + task.getResult().size());
+                            total_numero_cajas.setText("N° " + task.getResult().size());
 
                             cajaAdapter.notifyDataSetChanged();
 
@@ -289,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                             cajaAdapter.notifyDataSetChanged();
 
                             totalCajasEchas = task.getResult().size();
-                            total_numero_cajas.setText("Total de Cajas Echas = " + totalCajasEchas);
+                            total_numero_cajas.setText("N° " + totalCajasEchas);
 
                             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                                 @Override
@@ -385,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
                  }
 
                  totalCajasEchas += task.getResult().size();
-                 total_numero_cajas.setText("Total de Cajas Echas = "+totalCajasEchas);
+                 total_numero_cajas.setText("N° "+totalCajasEchas);
 
                  progressView.setVisibility(View.GONE);
                  refresh_caja.setRefreshing(false);
@@ -395,57 +412,52 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu,menu);
 
-        return super.onCreateOptionsMenu(menu);
-    }
+    void menu(){
+         bottomAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+             @Override
+             public boolean onMenuItemClick(MenuItem item) {
+                 int id = item.getItemId();
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+                 if (id == R.id.refresh){
+                     recreate();
+                 }else if (id == R.id.buscarfecha){
 
-            if (id == R.id.refresh){
-                recreate();
-            }else if (id == R.id.create_Caja) {
-                Intent intent = new Intent(MainActivity.this,CreateActivity.class);
-                startActivity(intent);
-            }else if (id == R.id.buscarfecha){
-
-                if (cajaMList.size()>0) {
-                    final Calendar newCalendar = Calendar.getInstance();
-                    DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            Calendar newDate = Calendar.getInstance();
-                            newDate.set(year, monthOfYear, dayOfMonth);
+                     if (cajaMList.size()>0) {
+                         final Calendar newCalendar = Calendar.getInstance();
+                         DatePickerDialog StartTime = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                 Calendar newDate = Calendar.getInstance();
+                                 newDate.set(year, monthOfYear, dayOfMonth);
 //                inputSearch.setText(dateFormatter.format(newDate.getTime()));
-                            String searchDate = new SimpleDateFormat("EEEE, dd MMMM yyyy ")
-                                    .format(newDate.getTime());
+                                 String searchDate = new SimpleDateFormat("EEEE, dd MMMM yyyy ")
+                                         .format(newDate.getTime());
 
-                            setVisivilityLiner();
-                            txt_search.setText(searchDate);
+                                 setVisivilityLiner();
+                                 txt_search.setText(searchDate);
 
-                            cajaAdapter.searchCajaDate(searchDate);
-                            cancelTimer();
+                                 cajaAdapter.searchCajaDate(searchDate);
+                                 cancelTimer();
 
-                            isSearch = true;
-                        }
+                                 isSearch = true;
+                             }
 
-                    }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-                    StartTime.show();
+                         StartTime.show();
 
-                }
-            }else if (id == R.id.deudas ){
-                Intent intent = new Intent(MainActivity.this, DeudasActivity.class);
-                startActivity(intent);
-            }
+                     }
+                 }
+                 return false;
+             }
+         });
 
-
-        return super.onOptionsItemSelected(item);
+         bottomAppBar.setNavigationOnClickListener(v -> {
+             Intent intent = new Intent(MainActivity.this, DeudasActivity.class);
+             startActivity(intent);
+         });
     }
+
 
     private void setVisivilityLiner() {
         linearSearch.setVisibility(View.VISIBLE);

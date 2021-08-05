@@ -85,7 +85,7 @@
 
     <LinearLayout
         android:id="@+id/linear_total"
-        android:background="@color/purple_700"
+        android:background="@color/purple_500"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:layout_alignParentBottom="true"

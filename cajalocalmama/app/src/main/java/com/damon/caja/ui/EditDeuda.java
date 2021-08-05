@@ -68,6 +68,8 @@ public class EditDeuda extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_deuda);
 
+        getSupportActionBar().setTitle("Editar Deuda");
+
         dialogCreateDeudas = new Dialog(this);
         dialogEditName = new Dialog(this);
         date = new Date();

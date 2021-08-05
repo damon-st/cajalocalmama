@@ -76,6 +76,8 @@ public class DeudasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deudas);
 
+        getSupportActionBar().setTitle("Listado Deudores");
+
         dialogCreateDeudas = new Dialog(this);
 
         date = new Date();
