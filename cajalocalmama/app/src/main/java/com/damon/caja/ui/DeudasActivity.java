@@ -1,17 +1,9 @@
 package com.damon.caja.ui;
 
-import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -22,6 +14,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.damon.caja.R;
 import com.damon.caja.adapters.DeudaAdapter;
@@ -35,8 +33,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -71,12 +69,20 @@ public class DeudasActivity extends AppCompatActivity {
 
     private ImageView filter_deuda;
 
+    private FirebaseFirestoreSettings firestoreSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deudas);
 
         getSupportActionBar().setTitle("Listado Deudores");
+
+
+        firestoreSettings  = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true)
+                .build();
+
+
 
         dialogCreateDeudas = new Dialog(this);
 
@@ -85,6 +91,7 @@ public class DeudasActivity extends AppCompatActivity {
         fechaCreate = new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm a", Locale.getDefault()).format(date);
 
         db = FirebaseFirestore.getInstance();
+        db.setFirestoreSettings(firestoreSettings);
 
         rcv_deudas = findViewById(R.id.rcy_deudas);
         txt_total = findViewById(R.id.total_deudas);

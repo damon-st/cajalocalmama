@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,8 +129,9 @@ public class ValorDeudaAdapter extends RecyclerView.Adapter<ValorDeudaViewHolder
             }
         });
     }
-
+     boolean isTotalPay = true;
     private void confirmarPago(int position, ValoresDeudas valoresDeudas, ProgressView progressView) {
+        ;
         progressView.setVisibility(View.VISIBLE);
         DocumentReference reference = db.collection("Valores").document(valoresDeudas.getId());
         HashMap<String,Object> valoresMap = new HashMap<>();
@@ -142,28 +144,35 @@ public class ValorDeudaAdapter extends RecyclerView.Adapter<ValorDeudaViewHolder
                     DocumentReference refDeudor = db.collection("Deudas").document(valoresDeudas.getIdDeudor());
                     HashMap<String,Object> deudorMap = new HashMap<>();
                     deudorMap.put("pay",true);
-                    refDeudor.update(deudorMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
+                    valoresDeudasList.get(position).setPay(true);
+                    for (int i =0; i < valoresDeudasList.size(); i++){
+                        Log.d("pagado", " " + valoresDeudasList.get(i).isPay());
+                        if (!valoresDeudasList.get(i).isPay()){
+                            isTotalPay = false;
+                        }
+                    }
+
+                    if (isTotalPay){
+                        refDeudor.update(deudorMap).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull  Exception e) {
                                 progressView.setVisibility(View.GONE);
-                                valoresDeudas.setPay(true);
-                                valoresDeudas.setPayDate(date);
-                               try {
-                                   valoresDeudasList.set(position,valoresDeudas);
-                                   notifyItemChanged(position,valoresDeudas);
-                               }catch (Exception e){
-                                   Toast.makeText(activity, "Error al actulizar el listado aqui "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-                               }
+                                Toast.makeText(activity, "Error al actualizar al deudor " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull  Exception e) {
-                            progressView.setVisibility(View.GONE);
-                            Toast.makeText(activity, "Error al actualizar al deudor " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        });
+                    }
+
+
+
+                    progressView.setVisibility(View.GONE);
+                    valoresDeudas.setPay(true);
+                    valoresDeudas.setPayDate(date);
+                    try {
+                        valoresDeudasList.set(position,valoresDeudas);
+                        notifyItemChanged(position,valoresDeudas);
+                    }catch (Exception e){
+                        Toast.makeText(activity, "Error al actulizar el listado aqui "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

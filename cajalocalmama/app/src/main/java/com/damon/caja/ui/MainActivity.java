@@ -6,8 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     BottomAppBar bottomAppBar;
     FloatingActionButton btn_add;
+    private boolean isAccesInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,15 +114,17 @@ public class MainActivity extends AppCompatActivity {
         new CheckNetworkConnection(MainActivity.this, new CheckNetworkConnection.OnConnectionCallback() {
             @Override
             public void onConnectionSuccess() {
+                isAccesInternet = true;
                 LoadCajas();
 
             }
 
             @Override
             public void onConnectionFail(String errorMsg) {
+                isAccesInternet = false;
                 Toast.makeText(MainActivity.this, "No ay conexcion a internet \n Mostremos datos en cache", Toast.LENGTH_LONG).show();
                 LoadCajasSinInternet();
-                btn_move_down.setVisibility(View.GONE);
+                btn_move_down.setVisibility(View.VISIBLE);
             }
         }).execute();
 
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         refresh_caja.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!isLastItemReached){
+                if (!isLastItemReached && isAccesInternet){
                     progressView.setVisibility(View.VISIBLE);
                 loadMoreCaja();
                 }else {
@@ -273,87 +273,87 @@ public class MainActivity extends AppCompatActivity {
 
     private void LoadCajas() {
         progressView.setVisibility(View.VISIBLE);
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-            @Override
-            public void run() {
-                Query reference = db.collection("Caja")
-                        .orderBy("fechaDate", Query.Direction.DESCENDING).limit(15);
+       new Thread(){
+           @Override
+           public void run() {
+               Query reference = db.collection("Caja")
+                       .orderBy("fechaDate", Query.Direction.DESCENDING).limit(15);
 
-                reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            progressView.setVisibility(View.GONE);
-                            cajaMList.clear();
-                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                CajaM cajaM = snapshot.toObject(CajaM.class);
-                                cajaM.setId(snapshot.getId());
-                                itemCaja++;
+               reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                   @Override
+                   public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                       if (task.isSuccessful()) {
+                           progressView.setVisibility(View.GONE);
+                           cajaMList.clear();
+                           for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                               CajaM cajaM = snapshot.toObject(CajaM.class);
+                               cajaM.setId(snapshot.getId());
+                               itemCaja++;
 
-                                if (itemCaja ==1){
-                                    String cajakey = snapshot.getId();
-                                    mLastKey = cajakey;
-                                    mPrevKey = cajakey;
-                                }
+                               if (itemCaja ==1){
+                                   String cajakey = snapshot.getId();
+                                   mLastKey = cajakey;
+                                   mPrevKey = cajakey;
+                               }
 
-                                cajaMList.add(cajaM);
+                               cajaMList.add(cajaM);
 
-                            }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
-                            }
-                            lastVisible = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                            cajaAdapter.notifyDataSetChanged();
+                           }
+                           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                               cajaMList.sort((c1,ca2) -> c1.getFechaDate().compareTo(ca2.getFechaDate()));
+                           }
+                           lastVisible = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                           cajaAdapter.notifyDataSetChanged();
 
-                            totalCajasEchas = task.getResult().size();
-                            total_numero_cajas.setText("N° " + totalCajasEchas);
+                           totalCajasEchas = task.getResult().size();
+                           total_numero_cajas.setText("N° " + totalCajasEchas);
 
-                            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                                @Override
-                                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                                    super.onScrollStateChanged(recyclerView, newState);
-                                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                                        isScrolling = true;
-                                    }
-                                }
+                           recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                               @Override
+                               public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                                   super.onScrollStateChanged(recyclerView, newState);
+                                   if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                                       isScrolling = true;
+                                   }
+                               }
 
-                                @Override
-                                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                                    super.onScrolled(recyclerView, dx, dy);
+                               @Override
+                               public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                   super.onScrolled(recyclerView, dx, dy);
 
-                                    int visibleItemCount = linearLayoutManager.getChildCount();
-                                    int totalItemCount = linearLayoutManager.getItemCount();
-                                    int pastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+                                   int visibleItemCount = linearLayoutManager.getChildCount();
+                                   int totalItemCount = linearLayoutManager.getItemCount();
+                                   int pastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 
-                                    if ((visibleItemCount + pastVisibleItem) >= totalItemCount) {
-                                        btn_move_down.setVisibility(View.GONE);
-                                    } else {
-                                        btn_move_down.setVisibility(View.VISIBLE);
-                                    }
+                                   if ((visibleItemCount + pastVisibleItem) >= totalItemCount) {
+                                       btn_move_down.setVisibility(View.GONE);
+                                   } else {
+                                       btn_move_down.setVisibility(View.VISIBLE);
+                                   }
 
-                                    if (isScrolling && (visibleItemCount + pastVisibleItem == totalItemCount) && !isLastItemReached) {
-                                        isScrolling = false;
+                                   if (isScrolling && (visibleItemCount + pastVisibleItem == totalItemCount) && !isLastItemReached) {
+                                       isScrolling = false;
 //                                        progressView.setVisibility(View.VISIBLE);
 
-                                    }
-                                }
-                            });
+                                   }
+                               }
+                           });
 
-                            recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+                           recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
 
-                        } else {
-                            progressView.setVisibility(View.GONE);
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressView.setVisibility(View.GONE);
-                        Toast.makeText(MainActivity.this, "Error Base de datos \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+                       } else {
+                           progressView.setVisibility(View.GONE);
+                       }
+                   }
+               }).addOnFailureListener(new OnFailureListener() {
+                   @Override
+                   public void onFailure(@NonNull Exception e) {
+                       progressView.setVisibility(View.GONE);
+                       Toast.makeText(MainActivity.this, "Error Base de datos \n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                   }
+               });
+           }
+       }.start();
     }
 
     private int itemCaja = 0;
