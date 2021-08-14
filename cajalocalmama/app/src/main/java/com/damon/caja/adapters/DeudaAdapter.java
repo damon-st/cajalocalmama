@@ -30,10 +30,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -110,6 +113,8 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
                         });
                         eliminar.create().show();
 
+                    }else if(item.getItemId() == R.id.deuda_pagado){
+                        payoNotPay(deudaM,position);
                     }
 
                     return false;
@@ -117,6 +122,27 @@ public class DeudaAdapter extends RecyclerView.Adapter<DeudasViewHolder> {
             });
 
             menu.show();
+        });
+    }
+
+    private void payoNotPay(DeudaM deudaM, int position) {
+        DocumentReference reference = db.collection("Deudas").document(deudaM.getId());
+        HashMap<String,Object> hashMap = new HashMap<>();
+        deudaM.setPay(!deudaM.isPay());
+        hashMap.put("pay",deudaM.isPay());
+        reference.update(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        deudaMList.set(position,deudaM);
+                        notifyItemChanged(position,deudaM);
+                    }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                Toast.makeText(activity, "Error al actulizar el apgado " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

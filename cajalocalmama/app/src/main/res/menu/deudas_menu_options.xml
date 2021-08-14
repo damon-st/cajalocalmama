@@ -4,6 +4,11 @@
     <item android:id="@+id/deuda_edit"
         android:title="Ediar o Actualizar"
         />
+
+    <item android:id="@+id/deuda_pagado"
+        android:title="Pay o Not Pay"
+        />
+
     <item android:title="Eliminar deuda"
         android:id="@+id/deuda_delete"/>
 
